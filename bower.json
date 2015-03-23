@@ -1,0 +1,23 @@
+{
+  "name": "forca-de-vendas",
+  "version": "0.0.0",
+  "authors": [
+    "Luiz Cunha <felipe.silvacunha@gmail.com>",
+    "Marcel Mossman"
+  ],
+  "description": "Sistema de Vendas",
+  "keywords": [
+    "php",
+    "js",
+    "web",
+    "git"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
