@@ -1,1 +1,18 @@
-<h1>Força de Vendas</h1>
+<div ng-controller="MainController">
+    <div ng-view ></div>
+</div>
+
+<script id="main.html" type="text/ng-template">
+    <h1>Força de Vendas</h1>
+    {{test}}
+</script>
+
+<script id="products.html" type="text/ng-template">
+    <?php echo $this->partial('partial/products/index.phtml') ?>
+</script>
+
+<script id="basket.html" type="text/ng-template">
+    <div ng-controller="BasketController">
+        {{test}}
+    </div>
+</script>
