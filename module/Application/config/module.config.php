@@ -105,19 +105,19 @@ return array(
     'navigation' => array(
         'default' => array(
             array(
-                'label' => 'Products',
+                'label' => 'Produtos',
                 'uri' => '#/products'
             ),
             array(
-                'label' => 'Basket',
+                'label' => 'Carrinho',
                 'uri' => '#/basket'
             ),
             array(
-                'label' => 'Users',
+                'label' => 'Usuários',
                 'uri' => '#/users'
             ),
             array(
-                'label' => 'Reports',
+                'label' => 'Relatórios',
                 'uri' => '#/reports'
             ),
         )

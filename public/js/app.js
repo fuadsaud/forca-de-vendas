@@ -17,17 +17,33 @@
             });
 
     })
+    .filter('splitMoney', function() {
+        return function(input, index) {
+            input = "" + input
+            var info = input.split('.')
+            var result = "00";
+            if (index < info.length) {
+                result = info[index];
+            }
+            if (result.length == 1) {
+                result += "0";
+            }
+            return result;
+        }
+    })
     .controller("MainController", function($scope) {
         $scope.test = 'oi';
     })
     .controller("ProductsController", ["$scope", function($scope) {
         $scope.products = [
-            {name: 'test'},
-            {name: 'test'},
-            {name: 'test'},
-            {name: 'test'},
-            {name: 'test'},
-            {name: 'test'}
+            {name: 'test', price: 12.5, quantity: 1},
+            {name: 'test', price: 12},
+            {name: 'test', price: 12.52},
+            {name: 'test', price: 12.5},
+            {name: 'test', price: 12.5},
+            {name: 'test', price: 12.5},
+            {name: 'test', price: 12.5},
+            {name: 'test', price: 12.5},
         ];
     }])
     .controller("BasketController", function($scope) {
