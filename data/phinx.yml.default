@@ -1,0 +1,13 @@
+paths:
+    migrations: %dir%
+
+environments:
+    default_migration_table: phinxlog
+    production:
+        adapter: %adapter%
+        host: %host%
+        name: %name%
+        user: %user%
+        pass: '%password%'
+        port: %port%
+        charset: %charset%

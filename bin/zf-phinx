@@ -1,0 +1,70 @@
+#!/usr/bin/env php
+
+<?php
+$basedir = dirname(__DIR__);
+
+$info = include "$basedir/config/autoload/" . (is_file("$basedir/config/autoload/local.php") ? 'local' : 'global') . '.php';
+if (!array_key_exists('db',$info)) {
+    throw new RuntimeException('Configuration is not found!');
+}
+
+if (array_key_exists('adapters', $info['db'])) {
+    $info = current($info['db']['adapters']);
+} else {
+    $info = $info['db'];
+}
+
+if (empty($info['dsn'])) {
+    throw new RuntimeException('Configuration is not found!');
+}
+
+$dsn = $info['dsn'];
+
+$pos = strpos($dsn, ':');
+if (!$pos) {
+    throw new RuntimeException("Invalid dsn configuration! [ $dsn ]");
+}
+$adapter = substr($dsn, 0, $pos);
+
+$attrs = explode(';',substr($dsn, $pos+1));
+$data = array(
+    'dir' => "$basedir/data/migrations",
+    'adapter' => $adapter,
+    'password' => '',
+    'host' => 'localhost',
+    'port' => '3306',
+    'charset' => 'utf8',
+);
+
+$yaml = file_get_contents("$basedir/data/phinx.yml.default");
+foreach ($attrs as $attr) {
+    $aux = explode('=',$attr);
+    switch ($aux[0]) {
+        case 'dbname':
+            $field = 'name';
+            break;
+        default:
+            $field = $aux[0];
+    }
+    $data[$field] = $aux[1];
+}
+
+if (array_key_exists('user', $info)) {
+    $data['user'] = $info['user'];
+}
+if (array_key_exists('password', $info)) {
+    $data['password'] = $info['password'];
+}
+
+foreach ($data as $key => $value) {
+    $yaml = str_replace("%$key%",$value, $yaml);
+}
+file_put_contents("$basedir/phinx.yml", $yaml);
+if (!in_array('-e', $argv)) {
+    $argv[] = '-e';
+    $argv[] = 'production';
+    $argc += 2;
+}
+
+require __DIR__.'/phinx';
+
