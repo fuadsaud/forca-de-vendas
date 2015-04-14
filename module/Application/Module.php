@@ -11,6 +11,7 @@ namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\Db\TableGateway\TableGateway;
 
 class Module
 {
@@ -33,6 +34,31 @@ class Module
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ),
+            ),
+        );
+    }
+
+    public function getControllerConfig()
+    {
+        return array(
+            'factories' => array(
+                'Application\Api\Controller\Users' => function($sm) {
+                    $users = $sm->getServiceLocator()->get('Application\Model\UsersTable');
+                    return new Controller\ApiController($users, 'User', 'Users');
+                }
+            )
+        );
+    }
+
+
+    public function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'Application\Model\UsersTable' => function($sm) {
+                    $table = new TableGateway('users', $sm->get('Zend\Db\Adapter\Adapter'));
+                    return new Model\UsersTable($table);
+                }
             ),
         );
     }
