@@ -155,12 +155,15 @@ class ApiController extends AbstractRestfulController
         $name = ucfirst($this->getSingularName());
         try {
             $entry = $table->find($id);
-            $table->delete($id);
-            $messages[] = array('type' => 'success', 'text' => "$name removed successfully!");
+            if (!$table->delete(array('id' => $id))) {
+                $this->getResponse()->setStatusCode(400);
+                $messages[] = array('type' => 'error', 'text' => "Cannot delete $name with identifier '$id'");
+            } else {
+                $messages[] = array('type' => 'success', 'text' => "$name removed successfully!");
+            }
         } catch (Exception\UnknowRegistryException $e) {
             $this->getResponse()->setStatusCode(404);
-            $messages[] = array('type' => 'error', 'code' => 'ERROR001', 'text' => "$name with identifier '$id' not exists!");
-            $entry = array();
+            $messages[] = array('type' => 'error', 'text' => "$name with identifier '$id' not exists!");
         }
 
         return new JsonModel(array('messages' => $messages));

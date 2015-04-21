@@ -45,6 +45,10 @@ class Module
                 'Application\Api\Controller\Users' => function($sm) {
                     $users = $sm->getServiceLocator()->get('Application\Model\UsersTable');
                     return new Controller\ApiController($users, 'User');
+                },
+                'Application\Api\Controller\Groups' => function($sm) {
+                    $users = $sm->getServiceLocator()->get('Application\Model\GroupsTable');
+                    return new Controller\ApiController($users, 'group');
                 }
             )
         );
@@ -57,11 +61,11 @@ class Module
             'factories' => array(
                 'Application\Model\UsersTable' => function($sm) {
                     $table = new TableGateway('users', $sm->get('Zend\Db\Adapter\Adapter'));
-                    return new Model\UsersTable($table);
+                    return new Model\UsersTable($table, $sm);
                 },
                 'Application\Model\GroupsTable' => function($sm) {
                     $table = new TableGateway('groups', $sm->get('Zend\Db\Adapter\Adapter'));
-                    return new Model\GroupsTable($table);
+                    return new Model\GroupsTable($table, $sm);
                 }
             ),
         );

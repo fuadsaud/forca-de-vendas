@@ -10,11 +10,14 @@ use Application\Exception;
 abstract class AbstractTable implements TableInterface
 {
 
+use \Zend\ServiceManager\ServiceLocatorAwareTrait;
+
     protected $forms = array();
 
-    public function __construct(TableGatewayInterface $table)
+    public function __construct(TableGatewayInterface $table, $sl)
     {
         $this->setTable($table);
+        $this->setServiceLocator($sl);
     }
 
     public function setTable(TableGatewayInterface $table)
