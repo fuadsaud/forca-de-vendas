@@ -5,8 +5,12 @@ namespace Application\Model;
 use Zend\Db\TableGateway\TableGatewayInterface;
 use Zend\Paginator;
 
+use Application\Exception;
+
 abstract class AbstractTable implements TableInterface
 {
+
+    protected $forms = array();
 
     public function __construct(TableGatewayInterface $table)
     {
@@ -27,10 +31,21 @@ abstract class AbstractTable implements TableInterface
     {
         $table = $this->getTable();
         if (is_null($id)) {
-            $table->insert($data);
+            try {
+                $table->insert($data);
+            } catch (\Exception $e) {
+                throw new Exception\RuntimeException($e->getMessage());
+            }
             $id = $table->getLastInsertValue();
         } else {
-            $table->update($data, array('id' => $id));
+            $entry = $this->find($id);
+            $entry = array_merge($entry->getArrayCopy(), $data);
+            unset($entry['id']);
+            try {
+                $table->update($data, array('id' => $id));
+            } catch (\Exception $e) {
+                throw new Exception\RuntimeException($e->getMessage());
+            }
         }
 
         return $id;
@@ -38,10 +53,15 @@ abstract class AbstractTable implements TableInterface
 
     public function find($id)
     {
-        return $this->getTable()->select(array('id' => $id));
+        $result = $this->getTable()->select(array('id' => $id))->current();
+        if (!$result) {
+            throw new Exception\UnknowRegistryException();
+        }
+
+        return $result;
     }
 
-    public function fetchAll($where, $options)
+    public function fetchAll($where = null, array $options = array())
     {
         $defaultOptions = array(
             'page' => 1,
@@ -57,7 +77,7 @@ abstract class AbstractTable implements TableInterface
                 ->setCurrentPageNumber($options['page']);
             $result = $paginator;
         } else {
-            $select = $this->getTable()->select($where);
+            $result = $this->getTable()->select($where);
         }
 
         return $result;
@@ -65,7 +85,7 @@ abstract class AbstractTable implements TableInterface
 
     public function delete($where)
     {
-        return $this->getTable()->delete($where);
+        return (bool)$this->getTable()->delete($where);
     }
 
     public function getForm($identifier)

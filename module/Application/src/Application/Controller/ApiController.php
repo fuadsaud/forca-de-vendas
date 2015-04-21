@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 use Application\Model;
+use Application\Exception;
 
 class ApiController extends AbstractRestfulController
 {
@@ -81,7 +82,7 @@ class ApiController extends AbstractRestfulController
 
         try {
             $entry = $table->find($id);
-        } catch (\Exception $e) {
+        } catch (Exception\UnknowRegistryException $e) {
             $name = ucfirst($this->getSingularName());
             $this->getResponse()->setStatusCode(404);
             $messages[] = array('type' => 'error', 'code' => 'ERROR001', 'text' => "$name with identifier '$id' not exists!");
@@ -98,9 +99,7 @@ class ApiController extends AbstractRestfulController
         $messages = &$result['messages'];
         $name = ucfirst($this->getSingularName());
         try {
-            $entry = $table->find($id);
-
-            $form = $table->getForm();
+            $form = $table->getForm('edit');
             $form->setData((array)$data);
             if ($form->isValid()) {
                 $table->save($id, $form->getData());
@@ -115,7 +114,7 @@ class ApiController extends AbstractRestfulController
                 $this->getResponse()->setStatusCode(400);
                 $messages[] = array('type' => 'error', 'text' => 'Some fields are invalid');
             }
-        } catch (\Exception $e) {
+        } catch (Exception\UnknowRegistryException $e) {
             $this->getResponse()->setStatusCode(404);
             $messages[] = array('type' => 'error', 'code' => 'ERROR001', 'message' => "$name with identifier '$id' not exists!");
             $entry = array();
@@ -130,14 +129,14 @@ class ApiController extends AbstractRestfulController
         $result = array('messages' => array());
         $messages = &$result['messages'];
 
-        $form = $table->getForm();
+        $form = $table->getForm('create');
 
         $form->setData($data);
         if ($form->isValid()) {
             $result['id'] = $table->save(null, $form->getData());
             $name = ucfirst($this->getSingularName());
             $messages[] = array('type' => 'success', 'text' => "$name created successfully");
-            $this->getResponse()->setStatsCode(201);
+            $this->getResponse()->setStatusCode(201);
         } else {
             $this->getResponse()->setStatusCode(400);
             $errors = $form->getMessages();
@@ -156,9 +155,9 @@ class ApiController extends AbstractRestfulController
         $name = ucfirst($this->getSingularName());
         try {
             $entry = $table->find($id);
-                $table->delete($id);
+            $table->delete($id);
             $messages[] = array('type' => 'success', 'text' => "$name removed successfully!");
-        } catch (\Exception $e) {
+        } catch (Exception\UnknowRegistryException $e) {
             $this->getResponse()->setStatusCode(404);
             $messages[] = array('type' => 'error', 'code' => 'ERROR001', 'text' => "$name with identifier '$id' not exists!");
             $entry = array();

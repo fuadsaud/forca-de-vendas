@@ -18,6 +18,8 @@ class Bootstrap
 
     public static function init()
     {
+        system('../../../bin/phinx rollback -t0');
+        system('../../../bin/phinx migrate');
         // Load the user-defined test configuration file, if it exists; otherwise, load
         if (is_readable(__DIR__ . '/TestConfig.php')) {
             $testConfig = include __DIR__ . '/TestConfig.php';
@@ -50,12 +52,13 @@ class Bootstrap
 
         $config = ArrayUtils::merge($baseConfig, $testConfig);
 
-        $serviceManager = new ServiceManager(new ServiceManagerConfig());
+        $serviceManager = new ServiceManager(new ServiceManagerConfig(self::getServiceConfig()));
         $serviceManager->setService('ApplicationConfig', $config);
         $serviceManager->get('ModuleManager')->loadModules();
 
         static::$serviceManager = $serviceManager;
         static::$config = $config;
+
     }
 
     public static function getServiceManager()
@@ -105,6 +108,42 @@ class Bootstrap
             $previousDir = $dir;
         }
         return $dir . '/' . $path;
+    }
+
+
+    public static function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'FixturesRunner' => function($sm) {
+                    $runner = new Fixture\Runner();
+                    $runner->setServiceLocator($sm);
+                    return $runner;
+                },
+                'ApplicationTest\Fixture\Users' => function($sm) {
+                    $users = new Fixture\Users();
+                    $users->setTable($sm->get('Application\Model\UsersTable'));
+                    return $users;
+                },
+                'ApplicationTest\Fixture\Groups' => function($sm) {
+                    $groups = new Fixture\Groups();
+                    $groups->setTable($sm->get('Application\Model\GroupsTable'));
+                    return $groups;
+                },
+                'Zend\Db\Adapter\Adapter' => function($sm) {
+                    $adapter = new \Zend\Db\Adapter\Adapter(array(
+                        'driver' => 'Mysqli',
+                        'database' => 'forca_de_vendas_test',
+                        'username' => 'root',
+                        'password' => '123'
+                    ));
+                    return $adapter;
+                },
+            ),
+            'allow_override' => true,
+        );
+
+
     }
 }
 
