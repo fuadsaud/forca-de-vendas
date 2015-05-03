@@ -11,7 +11,7 @@ class Products extends AbstractMigration
         $products->addColumn('name', 'string')
             ->addColumn('description', 'text')
             ->addColumn('active', 'boolean',array('default' => 1))
-            ->addColumn('strock_quantity', 'integer')
+            ->addColumn('stock_quantity', 'integer')
             ->create();
 
         $prices = $this->table('prices');

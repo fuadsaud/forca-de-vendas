@@ -18,8 +18,8 @@ class Bootstrap
 
     public static function init()
     {
-        system('../../../bin/phinx rollback -t0');
-        system('../../../bin/phinx migrate');
+        system('../../../bin/phinx rollback -t0 -q');
+        system('../../../bin/phinx migrate -q');
         // Load the user-defined test configuration file, if it exists; otherwise, load
         if (is_readable(__DIR__ . '/TestConfig.php')) {
             $testConfig = include __DIR__ . '/TestConfig.php';
@@ -55,6 +55,8 @@ class Bootstrap
         $serviceManager = new ServiceManager(new ServiceManagerConfig(self::getServiceConfig()));
         $serviceManager->setService('ApplicationConfig', $config);
         $serviceManager->get('ModuleManager')->loadModules();
+        $adapter = $serviceManager->get('Zend\Db\Adapter\Adapter');
+        $adapter->setProfiler($serviceManager->get('Application\Db\Adapter\Profiler\Profiler'));
 
         static::$serviceManager = $serviceManager;
         static::$config = $config;
@@ -130,20 +132,19 @@ class Bootstrap
                     $groups->setTable($sm->get('Application\Model\GroupsTable'));
                     return $groups;
                 },
-                'Zend\Db\Adapter\Adapter' => function($sm) {
-                    $adapter = new \Zend\Db\Adapter\Adapter(array(
-                        'driver' => 'Mysqli',
-                        'database' => 'forca_de_vendas_test',
-                        'username' => 'root',
-                        'password' => '123'
-                    ));
-                    return $adapter;
+                'ApplicationTest\Fixture\Categories' => function($sm) {
+                    $categories = new Fixture\Categories();
+                    $categories->setTable($sm->get('Application\Model\CategoriesTable'));
+                    return $categories;
+                },
+                'ApplicationTest\Fixture\Products' => function($sm) {
+                    $products = new Fixture\Products();
+                    $products->setTable($sm->get('Application\Model\ProductsTable'));
+                    return $products;
                 },
             ),
             'allow_override' => true,
         );
-
-
     }
 }
 

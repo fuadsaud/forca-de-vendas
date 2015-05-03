@@ -30,8 +30,35 @@ use \Zend\ServiceManager\ServiceLocatorAwareTrait;
         return $this->table;
     }
 
+    public function getConnection()
+    {
+        return $this->getTable()->getAdapter()->getDriver()->getConnection();
+    }
+
+    public function beginTransaction()
+    {
+        $this->getServiceLocator()->get('Logger')->debug('Begin Transaction');
+        $this->getConnection()->beginTransaction();
+        return $this;
+    }
+
+    public function commit()
+    {
+        $this->getServiceLocator()->get('Logger')->debug('commit');
+        $this->getConnection()->commit();
+        return $this;
+    }
+
+    public function rollback()
+    {
+        $this->getServiceLocator()->get('Logger')->debug('rollback');
+        $this->getConnection()->rollback();
+        return $this;
+    }
+
     public function save($id, $data)
     {
+        $this->getServiceLocator()->get('Logger')->debug('Saving '.get_class($this). ' id '. $id);
         $table = $this->getTable();
         if (is_null($id)) {
             try {
@@ -56,6 +83,7 @@ use \Zend\ServiceManager\ServiceLocatorAwareTrait;
 
     public function find($id)
     {
+        $this->getServiceLocator()->get('Logger')->debug('Findind '.get_class($this).' by id '. $id);
         $result = $this->getTable()->select(array('id' => $id))->current();
         if (!$result) {
             throw new Exception\UnknowRegistryException();
@@ -66,6 +94,7 @@ use \Zend\ServiceManager\ServiceLocatorAwareTrait;
 
     public function fetchAll($where = null, array $options = array())
     {
+        $this->getServiceLocator()->get('Logger')->debug('FetchAll '.get_class($this));
         $defaultOptions = array(
             'page' => 1,
             'paginated' => false,
@@ -88,11 +117,13 @@ use \Zend\ServiceManager\ServiceLocatorAwareTrait;
 
     public function delete($where)
     {
+        $this->getServiceLocator()->get('Logger')->debug('Deleting '.get_class($this));
         return (bool)$this->getTable()->delete($where);
     }
 
     public function getForm($identifier)
     {
+        $this->getServiceLocator()->get('Logger')->debug('Getting ' . $identifier . ' Form from '.get_class($this));
         $identifier = (string)$identifier;
         if (!array_key_exists($identifier, $this->forms)) {
             $this->form[$identifier] = $this->loadForm($identifier);

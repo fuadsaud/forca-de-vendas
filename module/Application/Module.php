@@ -20,6 +20,10 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
+        $sm = $e->getApplication()->getServiceManager();
+        $adapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $adapter->setProfiler($sm->get('Application\Db\Adapter\Profiler\Profiler'));
     }
 
     public function getConfig()
@@ -66,6 +70,29 @@ class Module
                 'Application\Model\GroupsTable' => function($sm) {
                     $table = new TableGateway('groups', $sm->get('Zend\Db\Adapter\Adapter'));
                     return new Model\GroupsTable($table, $sm);
+                },
+                'Application\Model\CategoriesTable' => function($sm) {
+                    $table = new TableGateway('categories', $sm->get('Zend\Db\Adapter\Adapter'));
+                    return new Model\CategoriesTable($table, $sm);
+                },
+                'Application\Model\ProductsTable' => function($sm) {
+                    $table = new TableGateway('products', $sm->get('Zend\Db\Adapter\Adapter'));
+                    return new Model\ProductsTable($table, $sm);
+                },
+                'ProductsCategories' => function ($sm) {
+                    $table = new TableGateway('products_categories', $sm->get('Zend\Db\Adapter\Adapter'));
+                    return $table;
+                },
+                'Logger' => function ($sm) {
+                    $logger = new \Zend\Log\Logger;
+                    $writer = new \Zend\Log\Writer\Stream(__DIR__.'/../../logs/application.log');
+
+                    $logger->addWriter($writer);
+                    return $logger;
+                },
+                'Application\Db\Adapter\Profiler\Profiler' => function ($sm) {
+                    $logger = $sm->get('Logger');
+                    return new Db\Adapter\Profiler\Profiler($logger);
                 }
             ),
         );

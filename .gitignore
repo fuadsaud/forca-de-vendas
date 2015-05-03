@@ -15,3 +15,4 @@ frontend/src/stylesheet/vendor
 public/css/styles.css
 phinx.yml
 module/Application/test/report
+logs/*
