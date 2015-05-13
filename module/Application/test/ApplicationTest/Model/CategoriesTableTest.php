@@ -4,95 +4,44 @@ namespace ApplicationTest\Model;
 
 use ApplicationTest\Bootstrap;
 
-class CategoriesTableTest extends \PHPUnit_Framework_TestCase
+class CategoriesTableTest extends AbstractTable
 {
-    public function setUp()
+
+    protected function uses()
     {
-        Bootstrap::getServiceManager()->get('FixturesRunner')->uses(array('categories', 'products'));
-        parent::setUp();
+        return array('categories', 'products');
     }
 
-    public function testFind()
+    protected function getTable()
     {
-        $table = Bootstrap::getServiceManager()->get('Application\Model\CategoriesTable');
-        $result = $table->find(1);
-        $this->assertEquals(1, $result['id']);
-
-        $this->setExpectedException('Application\Exception\UnknowRegistryException');
-        $table->find(999999);
+        return $this->getServiceManager()->get('Application\Model\CategoriesTable');
     }
 
-    public function testFetchAll()
+    protected function getCreateData()
     {
-        $table = Bootstrap::getServiceManager()->get('Application\Model\CategoriesTable');
-        $result = $table->fetchAll();
-        $this->assertInstanceOf('Zend\Db\ResultSet\ResultSet', $result);
-        $this->assertNotEmpty($result->toArray());
-
-        $result = $table->fetchAll(null, array('paginated' => true));
-        $this->assertInstanceOf('Zend\Paginator\Paginator', $result);
-        $this->assertNotEmpty($result->getCurrentItems());
-    }
-
-    public function testCreate()
-    {
-        $table = Bootstrap::getServiceManager()->get('Application\Model\CategoriesTable');
-        $data = array(
+        return array(
             'name' => 'cat',
         );
-
-        $result = $table->save(null, $data);
-        $this->assertTrue(is_numeric($result));
-        $category = $table->find($result);
-        $this->assertNotEmpty($category);
-        $this->assertEquals('cat', $category['name']);
-
-        $this->setExpectedException('Application\Exception\RuntimeException');
-        $table->save(null, array());
     }
 
-    public function testUpdate()
+    protected function getUpdateData()
     {
-        $table = Bootstrap::getServiceManager()->get('Application\Model\CategoriesTable');
-        $data = array(
+        return array(
+            'id' => 1,
             'name' => 'cat up',
         );
-
-        $result = $table->save(1, $data);
-        $this->assertEquals(1, $result);
-        $category = $table->find($result);
-        $this->assertNotEmpty($category);
-        $this->assertEquals('cat up', $category['name']);
-
-        $this->setExpectedException('Application\Exception\UnknowRegistryException');
-        $table->save(999999, $data);
     }
 
-    public function testUpdateException()
+    protected function getDeletableId()
     {
-        $table = Bootstrap::getServiceManager()->get('Application\Model\CategoriesTable');
-        $this->setExpectedException('Application\Exception\RuntimeException');
-        $table->save(1, array());
+        return 2;
     }
 
-    public function testDelete()
+    protected function getUndeletableId()
     {
-        $table = Bootstrap::getServiceManager()->get('Application\Model\CategoriesTable');
-        $gateway = $table->getTable();
-        $select = $gateway->getSql()->select();
-        $select->columns(array('count' => new \Zend\Db\Sql\Expression('COUNT(*)')));
-        $preResult = $gateway->selectWith($select)->current();
-        $result = $table->delete(array('id' => 2));
-        $this->assertTrue($result);
-        $postResult = $gateway->selectWith($select)->current();
-        $this->assertEquals($preResult['count'] -1, $postResult['count']);
-
-        $preResult = $gateway->selectWith($select)->current();
-        $result = $table->delete(array('id' => 1));
-        $this->assertFalse($result);
-        $postResult = $gateway->selectWith($select)->current();
-        $this->assertEquals($preResult['count'], $postResult['count']);
+        return 1;
     }
+
 
     public function testGetForms()
     {

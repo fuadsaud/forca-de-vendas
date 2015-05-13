@@ -75,6 +75,10 @@ class Module
                     $table = new TableGateway('categories', $sm->get('Zend\Db\Adapter\Adapter'));
                     return new Model\CategoriesTable($table, $sm);
                 },
+                'Application\Model\ClientsTable' => function($sm) {
+                    $table = new TableGateway('clients', $sm->get('Zend\Db\Adapter\Adapter'));
+                    return new Model\ClientsTable($table, $sm);
+                },
                 'Application\Model\ProductsTable' => function($sm) {
                     $table = new TableGateway('products', $sm->get('Zend\Db\Adapter\Adapter'));
                     return new Model\ProductsTable($table, $sm);

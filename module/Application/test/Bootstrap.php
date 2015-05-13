@@ -16,10 +16,14 @@ class Bootstrap
     protected static $config;
     protected static $bootstrap;
 
+    public static function initMigration()
+    {
+        system('../../../bin/phinx rollback -t0');
+        system('../../../bin/phinx migrate');
+    }
+
     public static function init()
     {
-        system('../../../bin/phinx rollback -t0 -q');
-        system('../../../bin/phinx migrate -q');
         // Load the user-defined test configuration file, if it exists; otherwise, load
         if (is_readable(__DIR__ . '/TestConfig.php')) {
             $testConfig = include __DIR__ . '/TestConfig.php';
@@ -142,10 +146,16 @@ class Bootstrap
                     $products->setTable($sm->get('Application\Model\ProductsTable'));
                     return $products;
                 },
+                'ApplicationTest\Fixture\Clients' => function($sm) {
+                    $products = new Fixture\Clients();
+                    $products->setTable($sm->get('Application\Model\ClientsTable'));
+                    return $products;
+                },
             ),
             'allow_override' => true,
         );
     }
 }
 
+Bootstrap::initMigration();
 Bootstrap::init();

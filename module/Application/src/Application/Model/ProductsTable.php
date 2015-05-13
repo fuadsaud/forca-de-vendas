@@ -37,6 +37,9 @@ class ProductsTable extends AbstractTable
             $this->commit();
         } catch (\Exception $e) {
             $this->rollback();
+            if ($e instanceof Exception\UnknowRegistryException) {
+                throw $e;
+            }
             throw new Exception\RuntimeException($e->getMessage());
         }
 
