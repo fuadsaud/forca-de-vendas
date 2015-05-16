@@ -87,6 +87,10 @@ class Module
                     $table = new TableGateway('products_categories', $sm->get('Zend\Db\Adapter\Adapter'));
                     return $table;
                 },
+                'ProductsPrices' => function ($sm) {
+                    $table = new TableGateway('prices', $sm->get('Zend\Db\Adapter\Adapter'));
+                    return $table;
+                },
                 'Logger' => function ($sm) {
                     $logger = new \Zend\Log\Logger;
                     $writer = new \Zend\Log\Writer\Stream(__DIR__.'/../../logs/application.log');

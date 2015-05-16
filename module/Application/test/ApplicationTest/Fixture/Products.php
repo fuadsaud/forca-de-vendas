@@ -13,6 +13,7 @@ class Products extends AbstractFixture
                 'description' => 'Product Description',
                 'active' => 1,
                 'stock_quantity' => 10,
+                'price' => 0.99,
                 'categories' => array(1),
             ),
         );

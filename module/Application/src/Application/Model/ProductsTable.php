@@ -27,12 +27,24 @@ class ProductsTable extends AbstractTable
            $categories = $data['categories'];
            unset($data['categories']);
         }
+        $price = null;
+        if (isset($data['price'])) {
+            $price = $data['price'];
+            unset($data['price']);
+        }
+
+        $this->getServiceLocator()->get('Logger')->debug('PRICE: '.$price);
+
         try {
             $this->beginTransaction();
             $id = parent::save($id, $data);
 
             if (!is_null($categories)) {
                 $this->syncCategories($id, $categories);
+            }
+
+            if (!is_null($price)) {
+                $this->setPrice($id, $price);
             }
             $this->commit();
         } catch (\Exception $e) {
@@ -45,6 +57,36 @@ class ProductsTable extends AbstractTable
 
         return $id;
     }
+
+    public function setPrice($id, $price)
+    {
+        $pricesTable = $this->getServiceLocator()->get('ProductsPrices');
+        $date = date('Y-m-dTH:i:s');
+        $pricesTable->update(array('final_date' => $date), array('product_id' => $id));
+        $data = array('product_id' => $id, 'price' => (float)$price, 'initial_date' => $date);
+        $pricesTable->insert($data);
+
+        return $this;
+    }
+
+    public function find($id)
+    {
+        $result = parent::find($id);
+        $result['price'] = $this->getPrice($id);
+        return $result;
+    }
+
+    public function getPrice($id)
+    {
+        $pricesTable = $this->getServiceLocator()->get('ProductsPrices');
+        $price = $pricesTable->select(array(
+            'product_id' => $id,
+            new \Zend\Db\Sql\Predicate\IsNull('final_date')
+        ))->current();
+
+        return $price['price'];
+    }
+
 
     public function syncCategories($id, array $categories)
     {
@@ -69,6 +111,8 @@ class ProductsTable extends AbstractTable
                 $ids = array_map(function($a) { return $a['id'];}, $ids);
                 $productsCategories = $this->getServiceLocator()->get('ProductsCategories');
                 $productsCategories->delete(array('product_id' => $ids));
+                $pricesTable = $this->getServiceLocator()->get('ProductsPrices');
+                $pricesTable->delete(array('product_id' => $ids));
             }
             $result = parent::delete($where);
             $this->commit();
