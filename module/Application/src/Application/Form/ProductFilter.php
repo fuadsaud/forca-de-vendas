@@ -4,11 +4,16 @@ namespace Application\Form;
 
 use Zend\InputFilter\InputFilter;
 
+use Application\Validator;
+
 class ProductFilter extends InputFilter
 {
 
-    public function __construct()
+    use \Zend\ServiceManager\ServiceLocatorAwareTrait;
+
+    public function __construct($serviceLocator)
     {
+        $this->setServiceLocator($serviceLocator);
         $this->add([
             'name' => 'name',
             'required' => true,
@@ -27,6 +32,26 @@ class ProductFilter extends InputFilter
         ])->add([
             'name' => 'categories',
             'required' => true,
+            'validators' => [
+                [ 'name' => 'Callback', 'options' => [ 'callback' => array($this, 'validateCategories') ]]
+            ]
         ]);
+    }
+
+    public function validateCategories($value)
+    {
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+
+        $table = $this->getServiceLocator()->get('Application\Model\CategoriesTable');
+        $validator = new Validator\Exists($table);
+        foreach ($value as $val) {
+            if (!$validator->isValid($val)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

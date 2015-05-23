@@ -14,7 +14,7 @@ class ProductsTable extends AbstractTable
             case 'edit':
             case 'create':
                 $form = new Form\ProductForm();
-                $form->setInputFilter(new Form\ProductFilter());
+                $form->setInputFilter(new Form\ProductFilter($this->getServiceLocator()));
                 break;
         }
         return $form;
@@ -23,9 +23,12 @@ class ProductsTable extends AbstractTable
     public function save($id, $data)
     {
         $categories = null;
-        if (isset($data['categories']) && is_array($data['categories'])) {
-           $categories = $data['categories'];
-           unset($data['categories']);
+        if (isset($data['categories'])) {
+            $categories = $data['categories'];
+            if (!is_array($categories)) {
+                $categories = [$categories];
+            }
+            unset($data['categories']);
         }
         $price = null;
         if (isset($data['price'])) {
@@ -73,6 +76,7 @@ class ProductsTable extends AbstractTable
     {
         $result = parent::find($id);
         $result['price'] = $this->getPrice($id);
+        $result['categories'] = $this->getCategoriesIds($id);
         return $result;
     }
 
@@ -85,6 +89,13 @@ class ProductsTable extends AbstractTable
         ))->current();
 
         return $price['price'];
+    }
+
+    public function getCategoriesIds($id)
+    {
+        $table = $this->getServiceLocator()->get('ProductsCategories');
+        $categories = $table->select(array('product_id' => $id));
+        return array_map(function($cat) { return $cat['category_id']; }, $categories->toArray());
     }
 
 

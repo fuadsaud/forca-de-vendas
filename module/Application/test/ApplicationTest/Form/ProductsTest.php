@@ -55,6 +55,29 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testCreateWithInvalidCategory() {
+        $form = $this->getTable()->getForm('create');
+        $data = array(
+            'categories' => array(999999),
+        );
+        $form->setData($data);
+        $this->assertFalse($form->isValid());
+        $errors = $form->getMessages();
+        $this->assertArrayHasKey('categories', $errors);
+    }
+
+    public function testEditWithInvalidCategory() {
+        $form = $this->getTable()->getForm('edit');
+        $data = array(
+            'categories' => array(999999),
+        );
+        $form->setData($data);
+        $this->assertFalse($form->isValid());
+        $errors = $form->getMessages();
+        $this->assertArrayHasKey('categories', $errors);
+    }
+
+
     public function testEdit()
     {
         Bootstrap::getServiceManager()->get('FixturesRunner')->uses(array('categories', 'products'));

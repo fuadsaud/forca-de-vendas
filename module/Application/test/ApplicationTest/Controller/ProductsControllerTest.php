@@ -94,6 +94,7 @@ class ProductsControllerTest extends AbstractHttpControllerTestCase
         $json = json_decode($this->getResponse()->getBody(), true);
         $this->assertArrayHasKey('product', $json);
         $this->assertArrayHasKey('name', $json['product']);
+        $this->assertArrayHasKey('categories', $json['product']);
         $this->assertEquals(1, $json['product']['id']);
     }
 
@@ -168,7 +169,6 @@ class ProductsControllerTest extends AbstractHttpControllerTestCase
         $json = json_decode($this->getResponse()->getBody(), true);
         $this->assertArrayHasKey('product', $json);
         $data = $this->getData();
-        unset($data['categories']);
         $this->assertArrayInto($data, $json['product']);
     }
 
@@ -199,7 +199,6 @@ class ProductsControllerTest extends AbstractHttpControllerTestCase
         $json = json_decode($this->getResponse()->getBody(), true);
         $this->assertArrayHasKey('product', $json);
         $data = $this->getData();
-        unset($data['categories']);
         $this->assertArrayInto($data, $json['product']);
     }
 
