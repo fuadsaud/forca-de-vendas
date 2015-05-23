@@ -10,9 +10,11 @@ bin
 vendor
 bower_components
 node_modules
-config/autoload/local.php
+config/autoload/local.php*
 frontend/src/stylesheet/vendor
 public/css/styles.css
 phinx.yml
 module/Application/test/report
 logs/*
+module/Application/test/config/autoload/local.php
+module/Application/test/phinx.yml

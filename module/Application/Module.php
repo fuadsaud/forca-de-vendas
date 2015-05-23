@@ -51,8 +51,12 @@ class Module
                     return new Controller\ApiController($users, 'User');
                 },
                 'Application\Api\Controller\Groups' => function($sm) {
-                    $users = $sm->getServiceLocator()->get('Application\Model\GroupsTable');
-                    return new Controller\ApiController($users, 'group');
+                    $groups = $sm->getServiceLocator()->get('Application\Model\GroupsTable');
+                    return new Controller\ApiController($groups, 'group');
+                },
+                'Application\Api\Controller\Clients' => function($sm) {
+                    $clients = $sm->getServiceLocator()->get('Application\Model\ClientsTable');
+                    return new Controller\ApiController($clients, 'client');
                 }
             )
         );

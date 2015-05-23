@@ -18,3 +18,9 @@ Build frontend application
 ```bash
 grunt
 ```
+
+Run
+```bash
+cd public/
+php -S localhost:8080 index.php
+```
