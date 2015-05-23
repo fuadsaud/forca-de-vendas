@@ -26,13 +26,6 @@ class ClientFilter extends InputFilter
             'required' => true,
             'validators' => array(
                 array(
-                    'name' => 'Regex',
-                    'options' => array(
-                        'pattern' => '/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/',
-                        'message' => 'Invalid Format',
-                    ),
-                ),
-                array(
                     'name' => 'Callback',
                     'options' => array(
                         'callback' => array($this, 'isValidCnpj'),
@@ -42,7 +35,7 @@ class ClientFilter extends InputFilter
             ),
             'filters' => array(
                 array('name' => 'Digits')
-            ),
+			),
         ));
     }
 

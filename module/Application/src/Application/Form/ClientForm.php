@@ -6,7 +6,7 @@ use Zend\Form;
 
 class ClientForm extends Form\Form
 {
-    public function __construct($name = 'group')
+    public function __construct($name = 'client')
     {
         parent::__construct($name);
         $this->init();
