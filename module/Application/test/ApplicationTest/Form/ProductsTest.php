@@ -20,12 +20,12 @@ class ProductTest extends \PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        Bootstrap::getServiceManager()->get('FixturesRunner')->uses(array('categories'));
+        Bootstrap::getServiceManager()->get('FixturesRunner')->uses(array('categories', 'products'));
         $form = $this->getTable()->getForm('create');
         $data = array(
             'name' => 'Sapato',
             'description' => 'Sapato salto alto',
-            'price' => '12,00',
+            'price' => '12.00',
             'stock_quantity' => 10,
             'categories' => array('1')
         );
@@ -57,12 +57,12 @@ class ProductTest extends \PHPUnit_Framework_TestCase
 
     public function testEdit()
     {
-        Bootstrap::getServiceManager()->get('FixturesRunner')->uses(array('categories'));
+        Bootstrap::getServiceManager()->get('FixturesRunner')->uses(array('categories', 'products'));
         $form = $this->getTable()->getForm('edit');
         $data = array(
             'name' => 'cat New',
             'description' => 'Sapato salto alto',
-            'price' => '12,00',
+            'price' => '12.00',
             'stock_quantity' => 10,
             'categories' => array('1')
         );

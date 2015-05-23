@@ -19,7 +19,7 @@ class ProductFilter extends InputFilter
             'name' => 'price',
             'required' => true,
             'validators' => [
-                ['name' => 'Zend\I18n\Validator\IsFloat']
+                ['name' => 'Regex', 'options' => ['pattern' => '/^\d+(\.\d{2}){0,1}$/']]
             ],
         ])->add([
             'name' => 'stock_quantity',

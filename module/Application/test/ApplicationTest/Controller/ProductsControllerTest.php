@@ -7,6 +7,9 @@ use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class ProductsControllerTest extends AbstractHttpControllerTestCase
 {
+
+    use \ApplicationTest\Assert\ArrayCompareTrait;
+
     public function setUp()
     {
         $this->setApplicationConfig(Bootstrap::getServiceManager()->get('ApplicationConfig'));
@@ -158,6 +161,15 @@ class ProductsControllerTest extends AbstractHttpControllerTestCase
         $json = json_decode($this->getResponse()->getBody(), true);
         $this->assertArrayHasKey('id', $json);
         $this->assertTrue(is_numeric($json['id']));
+
+        $this->reset();
+        $this->dispatch('/api/products/'.$json['id']);
+        $this->assertResponseStatusCode(200);
+        $json = json_decode($this->getResponse()->getBody(), true);
+        $this->assertArrayHasKey('product', $json);
+        $data = $this->getData();
+        unset($data['categories']);
+        $this->assertArrayInto($data, $json['product']);
     }
 
     public function testCreateProductWithError()
@@ -179,11 +191,16 @@ class ProductsControllerTest extends AbstractHttpControllerTestCase
         $json = json_decode($this->getResponse()->getBody(), true);
         $this->assertArrayHasKey('id', $json);
         $this->assertTrue(is_numeric($json['id']));
+        $this->assertEquals(1, $json['id']);
 
         $this->reset();
-        $this->dispatch('/api/products/1');
+        $this->dispatch('/api/products/'.$json['id']);
+        $this->assertResponseStatusCode(200);
         $json = json_decode($this->getResponse()->getBody(), true);
-        $this->assertEquals($json['product']['name'], $this->getData()['name']);
+        $this->assertArrayHasKey('product', $json);
+        $data = $this->getData();
+        unset($data['categories']);
+        $this->assertArrayInto($data, $json['product']);
     }
 
     public function testEditProductWithError()
@@ -209,7 +226,7 @@ class ProductsControllerTest extends AbstractHttpControllerTestCase
     {
         return array(
             'name' => 'Product',
-            'price' => '12,00',
+            'price' => '12.00',
             'description' => 'Description',
             'active' => 1,
             'stock_quantity' => 10,
