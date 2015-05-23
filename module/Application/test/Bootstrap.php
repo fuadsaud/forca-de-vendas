@@ -157,5 +157,6 @@ class Bootstrap
     }
 }
 
+\Locale::setDefault('pt_BR');
 Bootstrap::initMigration();
 Bootstrap::init();

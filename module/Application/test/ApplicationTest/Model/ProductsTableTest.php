@@ -90,11 +90,4 @@ class ProductsTableTest extends AbstractTable
         $this->assertLessThanOrEqual(new \DateTime(), new \DateTime($data['final_date']));
     }
 
-    /*public function testGetForms()
-    {
-        $table = $this->getTable();
-        $this->assertInstanceOf('Zend\Form\Form', $table->getForm('create'));
-        $this->assertInstanceOf('Zend\Form\Form', $table->getForm('edit'));
-    }*/
-
 }

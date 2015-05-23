@@ -24,6 +24,7 @@ class Module
         $sm = $e->getApplication()->getServiceManager();
         $adapter = $sm->get('Zend\Db\Adapter\Adapter');
         $adapter->setProfiler($sm->get('Application\Db\Adapter\Profiler\Profiler'));
+        \Locale::setDefault('pt_BR');
     }
 
     public function getConfig()
@@ -57,6 +58,10 @@ class Module
                 'Application\Api\Controller\Clients' => function($sm) {
                     $clients = $sm->getServiceLocator()->get('Application\Model\ClientsTable');
                     return new Controller\ApiController($clients, 'client');
+                },
+                'Application\Api\Controller\Products' => function($sm) {
+                    $products = $sm->getServiceLocator()->get('Application\Model\ProductsTable');
+                    return new Controller\ApiController($products, 'product');
                 }
             )
         );
