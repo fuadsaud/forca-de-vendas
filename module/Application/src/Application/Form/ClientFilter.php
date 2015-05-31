@@ -2,13 +2,15 @@
 
 namespace Application\Form;
 
-use Zend\InputFilter\InputFilter;
+use Zend\InputFilter;
 
-class ClientFilter extends InputFilter
+class ClientFilter extends InputFilter\InputFilter
 {
+    use \Zend\ServiceManager\ServiceLocatorAwareTrait;
 
-    public function __construct()
+    public function __construct($serviceLocator)
     {
+        $this->setServiceLocator($serviceLocator);
         $this->add(array(
             'name' => 'name',
             'required' => true,
@@ -35,8 +37,14 @@ class ClientFilter extends InputFilter
             ),
             'filters' => array(
                 array('name' => 'Digits')
-			),
+            ),
         ));
+
+        $this->add(
+            new ClientAddressesFilter($this->getServiceLocator()),
+            'addresses'
+        );
+
     }
 
     public function isValidCnpj($value)

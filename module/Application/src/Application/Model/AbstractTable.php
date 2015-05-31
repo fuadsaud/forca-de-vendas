@@ -81,10 +81,12 @@ use \Zend\ServiceManager\ServiceLocatorAwareTrait;
         return $id;
     }
 
-    public function find($id)
+    public function find($id, array $additionalConditions = array())
     {
         $this->getServiceLocator()->get('Logger')->debug('Findind '.get_class($this).' by id '. $id);
-        $result = $this->getTable()->select(array('id' => $id))->current();
+
+        $conditions = array_merge($additionalConditions, array('id' => $id));
+        $result = $this->getTable()->select($conditions)->current();
         if (!$result) {
             throw new Exception\UnknowRegistryException();
         }

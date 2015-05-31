@@ -47,21 +47,25 @@ class Module
     {
         return array(
             'factories' => array(
+                'Application\Api\Controller\Addresses' => function($sm) {
+                    $users = $sm->getServiceLocator()->get('Application\Model\AddressesTable');
+                    return new Api\Controller\AddressesController($users, 'Address', 'Addresses');
+                },
                 'Application\Api\Controller\Users' => function($sm) {
                     $users = $sm->getServiceLocator()->get('Application\Model\UsersTable');
-                    return new Controller\ApiController($users, 'User');
+                    return new Api\Controller\ApiController($users, 'User');
                 },
                 'Application\Api\Controller\Groups' => function($sm) {
                     $groups = $sm->getServiceLocator()->get('Application\Model\GroupsTable');
-                    return new Controller\ApiController($groups, 'group');
+                    return new Api\Controller\ApiController($groups, 'group');
                 },
                 'Application\Api\Controller\Clients' => function($sm) {
                     $clients = $sm->getServiceLocator()->get('Application\Model\ClientsTable');
-                    return new Controller\ApiController($clients, 'client');
+                    return new Api\Controller\ApiController($clients, 'client');
                 },
                 'Application\Api\Controller\Products' => function($sm) {
                     $products = $sm->getServiceLocator()->get('Application\Model\ProductsTable');
-                    return new Controller\ApiController($products, 'product');
+                    return new Api\Controller\ApiController($products, 'product');
                 }
             )
         );
@@ -72,6 +76,10 @@ class Module
     {
         return array(
             'factories' => array(
+                'Application\Model\AddressesTable' => function($sm) {
+                    $table = new TableGateway('addresses', $sm->get('Zend\Db\Adapter\Adapter'));
+                    return new Model\AddressesTable($table, $sm);
+                },
                 'Application\Model\UsersTable' => function($sm) {
                     $table = new TableGateway('users', $sm->get('Zend\Db\Adapter\Adapter'));
                     return new Model\UsersTable($table, $sm);

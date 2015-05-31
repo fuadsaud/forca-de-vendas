@@ -20,10 +20,20 @@ return array(
                     ),
                 ),
             ),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
+            'addresses' => array(
+                'type'    => 'Segment',
+                'options' => array(
+                    'route'    => '/api/clients/:cliend_id/addresses[/:id]',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Api\Controller',
+                        'controller' => 'addresses',
+                    ),
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                        'client_id' => '[0-9]+',
+                    ),
+                ),
+            ),
             'api' => array(
                 'type'    => 'Segment',
                 'options' => array(

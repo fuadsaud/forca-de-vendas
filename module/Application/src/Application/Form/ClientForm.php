@@ -22,6 +22,16 @@ class ClientForm extends Form\Form
             'name' => 'cnpj',
         ))->add(array(
             'name' => 'trading_name',
+        ))->add(array(
+            'name' => 'addresses',
+            'type' => 'collection',
+            'options' => array(
+                 'count' => 2,
+                 'allow_add' => false,
+                 'target_element' => array(
+                     'type' => 'Application\Form\AddressForm',
+                 ),
+             ),
         ));
     }
 }

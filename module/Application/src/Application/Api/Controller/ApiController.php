@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Controller;
+namespace Application\Api\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
@@ -50,7 +50,7 @@ class ApiController extends AbstractRestfulController
         $paginated = ($this->params()->fromQuery('show_all', false) === false);
 
         $entries = $this->getTable()->fetchAll(
-            NULL,
+            $this->getListConditions(),
             array(
                 'page' => (int)$this->params()->fromQuery('page', 1),
                 'paginated' => $paginated,
@@ -81,7 +81,7 @@ class ApiController extends AbstractRestfulController
         $messages = array();
 
         try {
-            $entry = $table->find($id);
+            $entry = $table->find($id, $this->getFindConditions());
         } catch (Exception\UnknowRegistryException $e) {
             $name = ucfirst($this->getSingularName());
             $this->getResponse()->setStatusCode(404);
@@ -139,7 +139,7 @@ class ApiController extends AbstractRestfulController
             $this->getResponse()->setStatusCode(201);
         } else {
             $this->getResponse()->setStatusCode(400);
-            $errors = $form->getMessages();
+            $errors = $form->getInputFilter()->getMessages();
             foreach ($errors as $key => $error) {
                 $result['fields'][] = array('name' => $key, 'errors' => array_values($error));
             }
@@ -154,7 +154,7 @@ class ApiController extends AbstractRestfulController
         $messages = array();
         $name = ucfirst($this->getSingularName());
         try {
-            $entry = $table->find($id);
+            $entry = $table->find($id, $this->getFindConditions());
             if (!$table->delete(array('id' => $id))) {
                 $this->getResponse()->setStatusCode(400);
                 $messages[] = array('type' => 'error', 'text' => "Cannot delete $name with identifier '$id'");
@@ -183,5 +183,15 @@ class ApiController extends AbstractRestfulController
             $pluralName = $singularName.'s';
         }
         $this->pluralName = strtolower($pluralName);
+    }
+
+    protected function getListConditions()
+    {
+        return array();
+    }
+
+    protected function getFindConditions()
+    {
+        return array();
     }
 }

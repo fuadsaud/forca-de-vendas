@@ -11,12 +11,44 @@ class ClientsTable extends AbstractTable
         $form = null;
         switch ($identifier) {
             case 'edit':
+                $form = new Form\ClientEditForm();
+                $form->setInputFilter(new Form\ClientEditFilter());
             case 'create':
                 $form = new Form\ClientForm();
-                $form->setInputFilter(new Form\ClientFilter());
+                $form->setInputFilter(new Form\ClientFilter($this->getServiceLocator()));
                 break;
         }
         return $form;
+    }
+
+    public function save($id, $data) {
+        if (is_null($id)) {
+            try {
+                $this->beginTransaction();
+                $addresses = [];
+                if (array_key_exists('addresses', $data)) {
+                    $addresses = (array)$data['addresses'];
+                    unset($data['addresses']);
+                }
+                $id = parent::save(null, $data);
+                if (!empty($addresses)) {
+                    $addressTable = $this->getServiceLocator()->get('Application\Model\AddressesTable');
+                    foreach ($addresses as $address) {
+                        $address['client_id'] = $id;
+                        $addressTable->save(null, $address);
+                    }
+                }
+                $this->commit();
+            } catch (\Exception $e) {
+                $this->rollback();
+                throw $e;
+            }
+        } else {
+            $id = parent::save($id, $data);
+        }
+
+        return $id;
+
     }
 
 /*    public function delete($where)
@@ -30,6 +62,7 @@ class ClientsTable extends AbstractTable
         $select
             ->columns(array('count' => new \Zend\Db\Sql\Expression('COUNT(*)')))
             ->join(array('g' => $subSelect), 'g.id = users.group_id', array());
+
         $result = $table->selectWith($select)->current();
         if ($result['count'] > 0) {
             return false;
