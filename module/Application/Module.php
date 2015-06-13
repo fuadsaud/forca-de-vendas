@@ -53,7 +53,7 @@ class Module
                 },
                 'Application\Api\Controller\Users' => function($sm) {
                     $users = $sm->getServiceLocator()->get('Application\Model\UsersTable');
-                    return new Api\Controller\ApiController($users, 'User');
+                    return new Api\Controller\UsersController($users, 'User');
                 },
                 'Application\Api\Controller\Groups' => function($sm) {
                     $groups = $sm->getServiceLocator()->get('Application\Model\GroupsTable');
@@ -66,7 +66,11 @@ class Module
                 'Application\Api\Controller\Products' => function($sm) {
                     $products = $sm->getServiceLocator()->get('Application\Model\ProductsTable');
                     return new Api\Controller\ApiController($products, 'product');
-                }
+                },
+                'Application\Api\Controller\Categories' => function($sm) {
+                    $model = $sm->getServiceLocator()->get('Application\Model\CategoriesTable');
+                    return new Api\Controller\ApiController($model, 'category', 'categories');
+                },
             )
         );
     }

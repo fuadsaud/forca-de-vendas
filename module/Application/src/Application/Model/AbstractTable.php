@@ -91,7 +91,7 @@ use \Zend\ServiceManager\ServiceLocatorAwareTrait;
             throw new Exception\UnknowRegistryException();
         }
 
-        return $result;
+        return $this->filterData($result);
     }
 
     public function fetchAll($where = null, array $options = array())
@@ -105,16 +105,41 @@ use \Zend\ServiceManager\ServiceLocatorAwareTrait;
         );
         $options = array_merge($defaultOptions, $options);
         if ($options['paginated']) {
-            $adapter = new Paginator\Adapter\DbTableGateway($this->getTable(), $where, $options['order']);
+            $adapter = new Paginator\Adapter\DbSelect($this->getBaseSelect($where, $options), $this->getTable()->getAdapter());
             $paginator = new Paginator\Paginator($adapter);
             $paginator->setItemCountPerPage($options['perPage'])
                 ->setCurrentPageNumber($options['page']);
             $result = $paginator;
+            $items = $result->getCurrentItems();
+            foreach ($items as &$item) {
+                $item = $this->filterData($item);
+            }
+            $items->rewind();
         } else {
-            $result = $this->getTable()->select($where);
+            $result = $this->getTable()->selectWith($this->getBaseSelect($where, $options));
+            $aux = array();
+            foreach ($result as $item) {
+                $aux[] = $this->filterData($item);
+            }
+            $result->initialize($aux);
         }
 
         return $result;
+    }
+
+    protected function filterData($item)
+    {
+        return $item;
+    }
+
+    protected function getBaseSelect($where, $options)
+    {
+        $select = $this->getTable()->getSql()->select();
+        $select->where($where);
+        if ($options['order']) {
+            $select->order($options['order']);
+        }
+        return $select;
     }
 
     public function delete($where)

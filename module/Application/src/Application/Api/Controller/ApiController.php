@@ -68,7 +68,7 @@ class ApiController extends AbstractRestfulController
             ));
         } else {
             return new JsonModel(array(
-                $this->getPluralName() => $entries->getCurrentItems(),
+                $this->getPluralName() => $entries->getCurrentItems()->getArrayCopy(),
                 'page' => $entries->getCurrentPageNumber(),
                 'pages' => $entries->getPages()->pageCount,
                 'messages' => array(),

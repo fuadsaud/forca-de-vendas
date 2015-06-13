@@ -12,5 +12,6 @@
  */
 
 return array(
+    'external_url' => 'http://localhost/forca-de-vendas/public'
     // ...
 );

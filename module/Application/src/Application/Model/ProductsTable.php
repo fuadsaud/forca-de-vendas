@@ -63,11 +63,14 @@ class ProductsTable extends AbstractTable
 
     public function setPrice($id, $price)
     {
-        $pricesTable = $this->getServiceLocator()->get('ProductsPrices');
-        $date = date('Y-m-dTH:i:s');
-        $pricesTable->update(array('final_date' => $date), array('product_id' => $id));
-        $data = array('product_id' => $id, 'price' => (float)$price, 'initial_date' => $date);
-        $pricesTable->insert($data);
+        $oldPrice = $this->getPrice($id);
+        if ($price != $oldPrice) {
+            $pricesTable = $this->getServiceLocator()->get('ProductsPrices');
+            $date = date('Y-m-dTH:i:s');
+            $pricesTable->update(array('final_date' => $date), array('product_id' => $id));
+            $data = array('product_id' => $id, 'price' => (float)$price, 'initial_date' => $date);
+            $pricesTable->insert($data);
+        }
 
         return $this;
     }
@@ -107,6 +110,22 @@ class ProductsTable extends AbstractTable
             $table->insert(array('product_id' => $id, 'category_id' => $category_id));
         }
         return $this;
+    }
+
+    protected function getBaseSelect($where, $options)
+    {
+        $select = $this->getTable()->getSql()->select();
+        $select->join(['p' => 'prices'], 'p.product_id = products.id', ['price'])
+            ->where($where)
+            ->where(new \Zend\Db\Sql\Predicate\IsNull('p.final_date'))
+            ->order($options['order']);
+        return $select;
+    }
+
+    public function filterData($item)
+    {
+        $item['categories'] = $this->getCategoriesIds($item['id']);
+        return $item;
     }
 
     public function delete($where)

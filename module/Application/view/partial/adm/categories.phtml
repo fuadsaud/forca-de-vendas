@@ -1,0 +1,33 @@
+<?php
+//    $canEdit = $this->permissions()->isAllowed('categories', 'edit');
+    $canEdit = true;
+?>
+<?php echo $this->partial('partial/pagination.phtml', array('showFilter' => true, 'identifier' => 'categories', 'showInactiveFilter' => true)) ?>
+<div class="row table-row-title">
+    <div class="col-md-10">
+        <a ng-column-order="name" ng-element-name="category"><?php echo $this->translate('Name') ?></a>
+    </div>
+</div>
+<div class="row table-row" ng-show="_new">
+    <form name="category_form" ng-submit="save_category(category)">
+        <div class="col-xs-10">
+            <div>
+                <input class="form-control" ng-model="category.name" type="text" ng-error-message="category.errors.name" >
+            </div>
+        </div>
+        <button class="btn btn-primary"><?php echo $this->translate('Save') ?></button>
+    </form>
+</div>
+<div class="row table-row" ng-repeat="category in categories | filter:filter" ng-class="{'bg-danger': category.active == 0}">
+    <div class="col-md-10">
+        <div<?php if ($canEdit): ?> ng-content-editable="category:text"<?php endif ?> ng-model="category.name" data-errors="category.errors.name">{{category.name}}&nbsp;</div>
+    </div>
+    <div class="col-xs-2 action-cell text-right">
+        <?php if (true || $this->permissions()->isAllowed('categories', 'delete')) : ?>
+            <button ng-show="category.active==1" ng-click="delete_category(category.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
+                <i class="glyphicon glyphicon-trash"></i>
+                <span class="sr-only"><?php echo $this->translate('Delete') ?></span>
+            </button>
+        <?php endif ?>
+    </div>
+</div>

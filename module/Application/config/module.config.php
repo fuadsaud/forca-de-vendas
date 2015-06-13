@@ -106,16 +106,30 @@ return array(
     'navigation' => array(
         'default' => array(
             array(
-                'label' => 'Produtos',
+                'label' => 'Products',
                 'uri' => '#/products'
             ),
             array(
-                'label' => 'Carrinho',
+                'label' => 'Basket',
                 'uri' => '#/basket'
             ),
             array(
-                'label' => 'Usuários',
-                'uri' => '#/users'
+                'label' => 'Admin',
+                'uri' => '#',
+                'pages' => array(
+                    array(
+                        'label' => 'Users',
+                        'uri' => '#/adm/users'
+                    ),
+                    array(
+                        'label' => 'Products',
+                        'uri' => '#/adm/products'
+                    ),
+                    array(
+                        'label' => 'Categories',
+                        'uri' => '#/adm/categories'
+                    ),
+                ),
             ),
             array(
                 'label' => 'Relatórios',

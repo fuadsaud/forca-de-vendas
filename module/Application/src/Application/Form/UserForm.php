@@ -17,6 +17,8 @@ class UserForm extends Form\Form
         $this->add(array(
             'name' => 'name'
         ))->add(array(
+            'name' => 'id'
+        ))->add(array(
             'name' => 'email'
         ))->add(array(
             'name' => 'password',
@@ -35,7 +37,7 @@ class UserForm extends Form\Form
         unset($data['confirmation']);
 
         foreach ($data as $key => $value) {
-            if (is_null($value)) {
+            if (empty($value)) {
                 unset($data[$key]);
             }
         }

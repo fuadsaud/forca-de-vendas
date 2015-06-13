@@ -1,35 +1,33 @@
-<div ng-controller="ProductsController">
-    <div class="row">
-        <div class="col-sm-2">
-            <strong>Categorias</strong>
-            <hr>
-            <ul class="nav nav-pills nav-stacked">
-                <li role="presentation" class="active"><a href="#">Sapatos</a></li>
-                <li role="presentation"><a href="#">Tenis</a></li>
-                <li role="presentation"><a href="#">Botas</a></li>
-            </ul>
-        </div>
-        <div class="col-sm-10">
-            <strong>Produtos</strong>
-            <div class="row">
-                <div ng-repeat="product in products" class="col-sm-3">
-                    <div class="panel panel-success">
-                        <div class="panel-heading">
-                            <div class="panel-title">{{product.name}}</div>
-                        </div>
-                        <div class="panel-body">
-                            <img src="http://img.ph2-jpg.posthaus.com.br/Web/posthaus/foto/calcados/botas-femininas/sapato-lulita-azul_145872_600_1.jpg" class="img-responsive">
-                            <span class="price">R$ <big>{{product.price | splitMoney:0}}</big><small>,{{product.price | splitMoney:1}}</small></span>
-                            <hr>
-                            <form class="row">
-                                <div class="col-xs-6">
-                                    <input class="form-control" type="number" ng-model="product.quantity">
-                                </div>
-                                <div class="col-xs-6">
-                                    <button class="btn btn-success">Comprar</button>
-                                </div>
-                            </form>
-                        </div>
+<div class="row">
+    <div class="col-sm-2">
+        <strong>Categorias</strong>
+        <hr>
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation" class="active"><a href="#">Sapatos</a></li>
+            <li role="presentation"><a href="#">Tenis</a></li>
+            <li role="presentation"><a href="#">Botas</a></li>
+        </ul>
+    </div>
+    <div class="col-sm-10">
+        <strong>Produtos</strong>
+        <div class="row">
+            <div ng-repeat="product in products" class="col-sm-3">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <div class="panel-title">{{product.name}}</div>
+                    </div>
+                    <div class="panel-body">
+                        <img src="http://static5.netshoes.net/Produtos/tenis-oakley-two-barrel-2/02/654-3237-002/654-3237-002_zoom1.jpg" class="img-responsive">
+                        <span class="price">R$ <big>{{product.price | splitMoney:0}}</big><small>,{{product.price | splitMoney:1}}</small></span>
+                        <hr>
+                        <form class="row">
+                            <div class="col-xs-6">
+                                <input class="form-control" type="number" ng-model="product.quantity">
+                            </div>
+                            <div class="col-xs-6">
+                                <button class="btn btn-success">Comprar</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,86 @@
+<?php
+//    $canEdit = $this->permissions()->isAllowed('users', 'edit');
+    $canEdit = true;
+?>
+
+<div ng-switch="renderAction">
+    <div ng-switch-when="list">
+        <?php echo $this->partial('partial/pagination.phtml', array('showFilter' => true, 'identifier' => 'users', 'showInactiveFilter' => true)) ?>
+        <div class="row table-row-title">
+            <div class="col-md-3">
+                <a ng-column-order="name" ng-element-name="user"><?php echo $this->translate('Name') ?></a>
+            </div>
+            <div class="col-md-4">
+                <a ng-column-order="email" ng-element-name="user"><?php echo $this->translate('Email') ?></a>
+            </div>
+            <div class="col-sm-3">
+                <?php echo $this->translate('Groups') ?>
+            </div>
+        </div>
+        <div class="row table-row" ng-show="_new">
+            <form name="user_form" ng-submit="save_user(user)">
+                <div class="col-xs-3">
+                    <div>
+                        <input class="form-control" ng-model="user.name" type="text" ng-error-message="user.errors.name" >
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div>
+                        <input class="form-control" ng-model="user.email" type="email" ng-error-message="user.errors.email">
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <div>
+                        <select ng-options="group.id as group.name for group in groups" class="form-control" ng-model="user.group_id" ng-error-message="user.errors.group_id"></select>
+                    </div>
+                </div>
+                <button class="btn btn-primary"><?php echo $this->translate('Save') ?></button>
+            </form>
+        </div>
+        <div class="row table-row" ng-repeat="user in users | filter:filter" ng-class="{'bg-danger': user.active == 0}">
+            <div class="col-md-3">
+                <div<?php if ($canEdit): ?> ng-content-editable="user:text"<?php endif ?> ng-model="user.name" data-errors="user.errors.name">{{user.name}}&nbsp;</div>
+            </div>
+            <div class="col-md-4">
+                <div<?php if ($canEdit): ?> ng-content-editable="user:text"<?php endif ?> ng-model="user.email" data-errors="user.errors.email">{{user.email}}&nbsp;</div>
+            </div>
+            <div class="col-sm-3">
+                <div<?php if ($canEdit): ?> ng-content-editable="user:select" data-options="groups_options"<?php endif ?> ng-model="user.group_id" data-errors="user.errors.group_id">{{user.group_name}}</div>
+            </div>
+            <div class="col-xs-2 action-cell text-right">
+                <?php if (true || $this->permissions()->isAllowed('users', 'delete')) : ?>
+                    <button ng-click="delete_user(user.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
+                        <i class="glyphicon glyphicon-trash"></i>
+                        <span class="sr-only"><?php echo $this->translate('Delete') ?></span>
+                    </button>
+                <?php endif ?>
+            </div>
+        </div>
+    </div>
+    <div ng-switch-when="welcome">
+        <div class="row">
+            <form ng-submit="set_password(user)" name="update_password">
+                <div class="col-md-offset-3 col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><?php echo $this->translate('Set your new password') ?></div>
+                        <div class="panel-body">
+                            <div class="form-group" ng-class="{'has-warning has-feedback': update_password.$error.minlength}">
+                                <label><?php echo $this->translate('Password') ?></label>
+                                <input ng-model="user.password" ng-minlength="6" class="form-control" type="password" ng-error-message="user.errors.password"/>
+                                <span ng-show="update_password.$error.minlength" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            </div>
+                            <div class="form-group" ng-class="{'has-warning has-feedback': update_password.$error.equals}">
+                                <label><?php echo $this->translate('Confirmation') ?></label>
+                                <input equals="user.password" ng-model="user.confirmation" class="form-control" type="password" ng-error-message="user.errors.confirmation"/>
+                                <span ng-show="update_password.$error.equals" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            </div>
+                        </div>
+                        <div class="panel-footer text-right">
+                            <button class="btn btn-primary"><?php echo $this->translate('Salvar') ?></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -6,17 +6,27 @@ use Zend\InputFilter\InputFilter;
 
 class UserEditFilter extends InputFilter
 {
+    use \Zend\ServiceManager\ServiceLocatorAwareTrait;
 
-    public function __construct()
+    public function __construct($serviceLocator)
     {
+        $this->setServiceLocator($serviceLocator);
         $this->add(array(
             'name' => 'name',
-            'required' => false,
+            'required' => true,
         ))->add(array(
             'name' => 'email',
-            'required' => false,
+            'required' => true,
             'validators' => array(
-                array('name' => 'email_address')
+                array('name' => 'email_address'),
+                array(
+                    'name' => 'Application\Validator\UniqueEntry',
+                    'options' => array(
+                        'table' => $this->getServiceLocator()->get('Application\Model\UsersTable'),
+                        'fields' => array('email'),
+                        'ignoreFields' => array('users.id' => 'id'),
+                    ),
+                )
             )
         ))->add(array(
             'name' => 'confirmation',
@@ -34,24 +44,9 @@ class UserEditFilter extends InputFilter
 
     public function isValid($context = null)
     {
-
         $data = $this->getRawValues();
-        $passed = false;
-        foreach ($data as $key => $value) {
-            if (!is_null($value)) {
-                $passed = true;
-                break;
-            }
-        }
-
-        if (!$passed) {
-            foreach ($this->inputs as $input) {
-                $input->setRequired(true);
-            }
-        } else {
-            if (!is_null($data['password'])) {
-                $this->inputs['confirmation']->setRequired(true);
-            }
+        if (!is_null($data['password'])) {
+            $this->inputs['confirmation']->setRequired(true);
         }
 
         return parent::isValid($context);

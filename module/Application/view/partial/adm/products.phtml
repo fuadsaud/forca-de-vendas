@@ -1,0 +1,79 @@
+<?php
+//    $canEdit = $this->permissions()->isAllowed('products', 'edit');
+    $canEdit = true;
+?>
+<?php echo $this->partial('partial/pagination.phtml', array('showFilter' => true, 'identifier' => 'products', 'showInactiveFilter' => true)) ?>
+<div class="row table-row-title">
+    <div class="col-md-3">
+        <a ng-column-order="name" ng-element-name="product"><?php echo $this->translate('Name') ?></a>
+    </div>
+    <div class="col-md-3">
+        <a ng-column-order="description" ng-element-name="product"><?php echo $this->translate('Description') ?></a>
+    </div>
+    <div class="col-md-3">
+        <?php echo $this->translate('Categories') ?>
+    </div>
+    <div class="col-md-1">
+        <a ng-column-order="price" ng-element-name="product"><?php echo $this->translate('Price') ?></a>
+    </div>
+    <div class="col-md-1">
+        <a ng-column-order="stock_quantity" ng-element-name="product"><?php echo $this->translate('Stock') ?></a>
+    </div>
+</div>
+<div class="row table-row" ng-show="_new">
+    <form name="product_form" ng-submit="save_product(product)">
+        <div class="col-xs-3">
+            <div>
+                <input class="form-control" ng-model="product.name" type="text" ng-error-message="product.errors.name" >
+            </div>
+        </div>
+        <div class="col-xs-3">
+            <div>
+                <input class="form-control" ng-model="product.description" type="text" ng-error-message="product.errors.description">
+            </div>
+        </div>
+        <div class="col-xs-3">
+            <div>
+                <select ng-options="category.id as category.name for category in categories" data-select style="width:100%" class="form-control" multiple="multiple" ng-model="product.categories" ng-error-message="product.errors.categories"></select>
+            </div>
+        </div>
+        <div class="col-xs-1">
+            <div>
+                <input class="form-control"  data-currency ng-model="product.price" type="text" ng-error-message="product.errors.price">
+            </div>
+        </div>
+        <div class="col-xs-1">
+            <div>
+                <input class="form-control" ng-model="product.stock_quantity" data-integer type="text" ng-error-message="product.errors.stock_quantity">
+            </div>
+        </div>
+        <button class="btn btn-primary"><?php echo $this->translate('Save') ?></button>
+    </form>
+</div>
+<div class="row table-row" ng-repeat="product in products | filter:filter" ng-class="{'bg-danger': product.active == 0}">
+    <div class="col-md-3">
+        <div<?php if ($canEdit): ?> ng-content-editable="product:text"<?php endif ?> ng-model="product.name" data-errors="product.errors.name">{{product.name}}&nbsp;</div>
+    </div>
+    <div class="col-md-3">
+        <div<?php if ($canEdit): ?> ng-content-editable="product:text"<?php endif ?> ng-model="product.description" data-errors="product.errors.description">{{product.description}}&nbsp;</div>
+    </div>
+    <div class="col-sm-3">
+        <div<?php if ($canEdit): ?> ng-content-editable="product:select" data-multiple data-options="categories_options"<?php endif ?> ng-model="product.categories" data-errors="product.errors.categories">
+            <span class="label label-warning" style="margin-right:5px;" ng-repeat="category in getCategories(product.categories)">{{category}}</span>
+        </div>
+    </div>
+    <div class="col-sm-1">
+        <div<?php if ($canEdit): ?> ng-content-editable="product:currency" <?php endif ?> ng-model="product.price" data-errors="product.errors.price">{{product.price}}</div>
+    </div>
+    <div class="col-sm-1">
+        <div<?php if ($canEdit): ?> ng-content-editable="product:integer" <?php endif ?> ng-model="product.stock_quantity" data-errors="product.errors.stock_quantity">{{product.stock_quantity}}</div>
+    </div>
+    <div class="col-xs-1 action-cell text-right">
+        <?php if (true || $this->permissions()->isAllowed('products', 'delete')) : ?>
+            <button ng-show="product.active==1" ng-click="delete_product(product.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
+                <i class="glyphicon glyphicon-trash"></i>
+                <span class="sr-only"><?php echo $this->translate('Delete') ?></span>
+            </button>
+        <?php endif ?>
+    </div>
+</div>

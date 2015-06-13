@@ -11,14 +11,26 @@
         ?>
 
         <?php echo $this->headlink()
-            ->appendStylesheet('vendor/bootstrap/bootstrap.css');
+            ->appendStylesheet('vendor/bootstrap/css/bootstrap.css')
+            ->appendStylesheet('vendor/select2/select2.css')
+            ->appendStylesheet('css/styles.css');
         ?>
+        <?php $this->headScript()->captureStart() ?>
+            var BASEURL = '<?php echo $this->basePath(); ?>/';
+        <?php $this->headScript()->captureEnd() ?>
 
         <?php echo $this->headScript()
             ->appendFile('vendor/jquery/jquery.js')
-            ->appendFile('vendor/bootstrap/bootstrap.js')
+            ->appendFile('vendor/bootstrap/js/bootstrap.js')
             ->appendFile('vendor/angularjs/angular.js')
             ->appendFile('vendor/angular-route/angular-route.js')
+            ->appendFile('vendor/angular-bootstrap/ui-bootstrap-tpls.min.js')
+            ->appendFile('vendor/angular-resource/angular-resource.js')
+            ->appendFile('vendor/select2/select2.js')
+            ->appendFile('vendor/jquery.inputmask/jquery.inputmask.js')
+            ->appendFile('js/basic.js')
+            ->appendFile('js/crud.js')
+            ->appendFile('js/content-editable.js')
             ->appendFile('js/app.js')
         ?>
 
