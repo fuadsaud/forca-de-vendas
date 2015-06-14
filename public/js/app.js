@@ -17,6 +17,21 @@
                 action: 'list',
                 templateUrl: 'admproducts.html',
             })
+            .when('/adm/clients/list', {
+                controller: 'ClientsController',
+                action: 'list',
+                templateUrl: 'clients.html',
+            })
+            .when('/adm/clients/add', {
+                controller: 'ClientsController',
+                action: 'add',
+                templateUrl: 'clients.html',
+            })
+            .when('/adm/clients/edit/:id', {
+                controller: 'ClientsController',
+                action: 'edit',
+                templateUrl: 'clients.html',
+            })
             .when('/adm/users', {
                 controller: 'UsersController',
                 action: 'list',
@@ -73,7 +88,7 @@
                         element.parent().addClass('has-error').addClass('has-feedback');
                         element.parent().append('<span class="glyphicon glyphicon-remove form-control-feedback" data-error-feedback aria-hidden="true"></span>')
                         element.attr('data-placement', 'bottom');
-                        element.attr('data-content', current.join("\n"))
+                        element.attr('data-content', $.map(current, function(value, index) {return value;}).join(".\n"))
                         element.popover({trigger: 'hover'});
                     } else {
                         element.popover('destroy')
@@ -126,6 +141,11 @@
     })
     .factory('User', ['$resource', function($resource) {
         return $resource(BASEURL+'api/users/:id', {id: '@_id'}, {
+            update: {method: 'PUT', params: {id: '@id'} }
+        });
+    }])
+    .factory('Client', ['$resource', function($resource) {
+        return $resource(BASEURL+'api/clients/:id', {id: '@_id'}, {
             update: {method: 'PUT', params: {id: '@id'} }
         });
     }])
@@ -353,5 +373,65 @@
     .controller("CategoriesController", ['$scope', 'Category', function($scope, Category) {
         var categoriesCrud = new CRUD($scope, Category, 'categories', 'category');
         categoriesCrud.getList();
+    }])
+    .controller("ClientsController", ['$scope', '$route', '$routeParams', '$location', 'Client', function($scope, $route, $routeParams, $location, Client) {
+        var clientsCrud = new CRUD($scope, Client, 'clients', 'client');
+        $scope.clients = [];
+
+        clientsCrud.afterSave = function(entry) {
+            $location.path('adm/clients/list');
+            return entry;
+        }
+        clientsCrud.afterUpdate = function(entry) {
+            $location.path('adm/clients/list');
+            return entry;
+        }
+
+        $scope.new_clients = function() {
+            $location.path('adm/clients/add');
+        }
+
+
+        $scope.$watch('client', function() {
+            if ($scope.client.same_addresses) {
+                $scope.client.addresses[1] = angular.copy($scope.client.addresses[0]);
+                $scope.client.addresses[1].type = 'delivery';
+            }
+        }, true)
+
+        var render = function() {
+            var id = ($routeParams.id || "");
+            var renderAction = $route.current.action;
+            if (renderAction == 'list') {
+                clientsCrud.getList();
+            } else if (renderAction == 'add') {
+                $scope.client = {
+                    same_addresses: false,
+                    addresses: {
+                        0: {
+                            type: 'billing',
+                            country: 'Brasil',
+                        },
+                        1: {
+                            type: 'delivery',
+                            country: 'Brasil',
+                        }
+                    }
+                }
+            } else if (renderAction == 'edit') {
+                clientsCrud.get(id).$promise.then(function(){}, function() {
+                    $location.path('adm/clients/list');
+                });
+            }
+            $scope.renderAction = renderAction;
+        }
+
+        $scope.$on(
+            "$routeChangeSuccess",
+            function ($currentRoute, $previousRoute) {
+                // Update the rendering.
+                render();
+            }
+        );
     }])
 })(jQuery);

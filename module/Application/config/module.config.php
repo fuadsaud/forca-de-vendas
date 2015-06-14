@@ -122,6 +122,10 @@ return array(
                         'uri' => '#/adm/users'
                     ),
                     array(
+                        'label' => 'Clients',
+                        'uri' => '#/adm/clients/list'
+                    ),
+                    array(
                         'label' => 'Products',
                         'uri' => '#/adm/products'
                     ),

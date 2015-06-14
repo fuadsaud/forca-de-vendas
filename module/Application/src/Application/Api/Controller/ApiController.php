@@ -109,7 +109,7 @@ class ApiController extends AbstractRestfulController
             } else {
                 $errors = $form->getMessages();
                 foreach ($errors as $key => $error) {
-                    $result['fields'][] = array('name' => $key, 'errors' => array_values($error));
+                    $result['fields'][] = array('name' => $key, 'errors' => $error);
                 }
                 $this->getResponse()->setStatusCode(400);
                 $messages[] = array('type' => 'error', 'text' => 'Some fields are invalid');
@@ -141,7 +141,7 @@ class ApiController extends AbstractRestfulController
             $this->getResponse()->setStatusCode(400);
             $errors = $form->getInputFilter()->getMessages();
             foreach ($errors as $key => $error) {
-                $result['fields'][] = array('name' => $key, 'errors' => array_values($error));
+                $result['fields'][] = array('name' => $key, 'errors' => $error);
             }
             $messages[] = array('type' => 'error', 'text' => 'Some fields are invalid');
         }

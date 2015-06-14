@@ -1,0 +1,58 @@
+<?php
+//    $canEdit = $this->permissions()->isAllowed('clients', 'edit');
+    $canEdit = true;
+?>
+
+<div ng-switch="renderAction">
+    <div ng-switch-when="list">
+        <?php echo $this->partial('partial/pagination.phtml', array('showFilter' => true, 'identifier' => 'clients', 'showInactiveFilter' => true)) ?>
+        <div class="row table-row-title">
+            <div class="col-md-3">
+                <a ng-column-order="name" ng-element-name="client"><?php echo $this->translate('Name') ?></a>
+            </div>
+            <div class="col-md-2">
+                <a ng-column-order="name" ng-element-name="client"><?php echo $this->translate('Trading Name') ?></a>
+            </div>
+            <div class="col-md-3">
+                <a ng-column-order="email" ng-element-name="client"><?php echo $this->translate('Email') ?></a>
+            </div>
+            <div class="col-sm-2">
+                <a ng-column-order="email" ng-element-name="client"><?php echo $this->translate('CNPJ') ?></a>
+            </div>
+        </div>
+        <div class="row table-row" ng-repeat="client in clients | filter:filter">
+            <div class="col-md-3">
+                <div<?php if ($canEdit): ?> ng-content-editable="client:text"<?php endif ?> ng-model="client.name" data-errors="client.errors.name">{{client.name}}&nbsp;</div>
+            </div>
+            <div class="col-md-2">
+                <div<?php if ($canEdit): ?> ng-content-editable="client:text"<?php endif ?> ng-model="client.trading_name" data-errors="client.errors.trading_name">{{client.trading_name}}&nbsp;</div>
+            </div>
+            <div class="col-md-3">
+                <div<?php if ($canEdit): ?> ng-content-editable="client:text"<?php endif ?> ng-model="client.email" data-errors="client.errors.email">{{client.email}}&nbsp;</div>
+            </div>
+            <div class="col-md-2">
+                <div<?php if ($canEdit): ?> ng-content-editable="client:integer"<?php endif ?> ng-model="client.cnpj" data-errors="client.errors.cnpj">{{client.cnpj}}&nbsp;</div>
+            </div>
+            <div class="col-xs-2 action-cell text-right">
+                <?php if (true || $this->permissions()->isAllowed('clients', 'update')) : ?>
+                    <a href="#/adm/clients/edit/{{client.id}}" class="fake-btn text-primary" title="<?php echo $this->translate('Edit') ?>" >
+                        <i class="glyphicon glyphicon-pencil"></i>
+                        <span class="sr-only"><?php echo $this->translate('Edit') ?></span>
+                    </a>
+                <?php endif ?>
+                <?php if (true || $this->permissions()->isAllowed('clients', 'delete')) : ?>
+                    <button ng-click="delete_client(client.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
+                        <i class="glyphicon glyphicon-trash"></i>
+                        <span class="sr-only"><?php echo $this->translate('Delete') ?></span>
+                    </button>
+                <?php endif ?>
+            </div>
+        </div>
+    </div>
+    <div ng-switch-when="add">
+        <?php echo $this->partial('partial/clients/form.phtml', ['action' => 'save']) ?>
+    </div>
+    <div ng-switch-when="edit">
+        <?php echo $this->partial('partial/clients/form.phtml', ['action' => 'update']) ?>
+    </div>
+</div>

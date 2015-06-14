@@ -1,0 +1,55 @@
+<form ng-submit="<?php echo $this->action ?>_client(client)">
+    <div class="panel panel-success">
+        <div class="panel-heading"><?php echo $this->translate('New Client') ?></div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label><?php echo $this->translate('Name') ?></label>
+                        <input class="form-control" ng-error-message="client.errors.name" ng-model="client.name">
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label><?php echo $this->translate('Trading Name') ?></label>
+                        <input class="form-control" ng-error-message="client.errors.trading_name" ng-model="client.trading_name">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label><?php echo $this->translate('CNPJ') ?></label>
+                        <input data-integer class="form-control" ng-error-message="client.errors.cnpj" ng-model="client.cnpj">
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label><?php echo $this->translate('Email') ?></label>
+                        <input class="form-control" ng-error-message="client.errors.email" ng-model="client.email">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <fieldset class="col-xs-6">
+                    <legend><?php echo $this->translate('Billing Address')?></legend>
+                    <?php echo $this->partial('partial/clients/address_form.phtml', ['identifier' => 'client.addresses[0]', 'errorIdentifier' => 'client.errors.addresses[0]']) ?>
+                </fieldset>
+                <fieldset class="col-xs-6">
+                    <legend>
+                        <?php echo $this->translate('Deliver Address')?>
+                        <span style="float:right;">
+                            <span style=" font-size: 12px; display: block; float: left; line-height: 30px; margin-right: 5px;"><?php echo $this->translate('Same Addresses?') ?></span>
+                            <input ng_model="client.same_addresses" type="checkbox" />
+                        </span>
+                    </legend>
+                    <?php echo $this->partial('partial/clients/address_form.phtml', ['identifier' => 'client.addresses[1]', 'errorIdentifier' => 'client.errors.addresses[1]', 'disabledCondition' => 'client.same_addresses']) ?>
+                </fieldset>
+            </div>
+        </div>
+        <div class="panel-footer text-right">
+            <button class="btn btn-success"><?php echo $this->translate('Save') ?></button>
+            <a class="btn btn-danger" href="#/adm/clients/list"><?php echo $this->translate('Cancel') ?></a>
+        </div>
+    </div>
+</form>
