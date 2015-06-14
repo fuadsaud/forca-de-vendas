@@ -71,6 +71,10 @@ class Module
                     $model = $sm->getServiceLocator()->get('Application\Model\CategoriesTable');
                     return new Api\Controller\ApiController($model, 'category', 'categories');
                 },
+                'Application\Api\Controller\Payments' => function($sm) {
+                    $model = $sm->getServiceLocator()->get('Application\Model\PaymentsTable');
+                    return new Api\Controller\ApiController($model, 'payment', 'payments');
+                },
             )
         );
     }
@@ -103,6 +107,14 @@ class Module
                 'Application\Model\ProductsTable' => function($sm) {
                     $table = new TableGateway('products', $sm->get('Zend\Db\Adapter\Adapter'));
                     return new Model\ProductsTable($table, $sm);
+                },
+                'Application\Model\PaymentsTable' => function($sm) {
+                    $table = new TableGateway('payments', $sm->get('Zend\Db\Adapter\Adapter'));
+                    return new Model\PaymentsTable($table, $sm);
+                },
+                'Application\Model\PaymentsFormsTable' => function($sm) {
+                    $table = new TableGateway('payments_forms', $sm->get('Zend\Db\Adapter\Adapter'));
+                    return new Model\PaymentsFormsTable($table, $sm);
                 },
                 'ProductsCategories' => function ($sm) {
                     $table = new TableGateway('products_categories', $sm->get('Zend\Db\Adapter\Adapter'));
