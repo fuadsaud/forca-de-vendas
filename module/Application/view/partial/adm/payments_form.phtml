@@ -1,0 +1,45 @@
+<form ng-submit="<?php echo $this->action ?>_payment(payment)">
+    <div class="form-group">
+        <label><?php echo $this->translate('Name') ?></label>
+        <input ng-model="payment.name" class="form-control" ng-error-message="payment.errors.name"/>
+    </div>
+    <div class="row">
+        <div class="well col-xs-3" ng-repeat="(index, form) in payment.forms">
+            <fieldset>
+                <legend>
+                    <?php echo $this->translate('Form') ?>
+                    <span style="font-size:15px; float:right">
+                        <a ng-show="index > 0" ng-click="remove_form(payment, index)" class="fake-btn text-danger" title="<?php echo $this->translate('Remove Form') ?>" >
+                            <i class="glyphicon glyphicon-remove"></i>
+                            <span class="sr-only"><?php echo $this->translate('Remove Form') ?></span>
+                        </a>
+                        <a ng-show="index+1 == payment.forms.length" ng-click="add_form(payment)" class="fake-btn text-success" title="<?php echo $this->translate('Add Form') ?>" >
+                            <i class="glyphicon glyphicon-plus"></i>
+                            <span class="sr-only"><?php echo $this->translate('Add Form') ?></span>
+                        </a>
+                    </span>
+                </legend>
+                <div class="form-group">
+                    <label><?php echo $this->translate('Description') ?></label>
+                    <input ng-model="form.description" class="form-control" ng-error-message="payment.errors.forms[index].description"/>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label><?php echo $this->translate('Installments') ?></label>
+                            <input data-integer ng-model="form.installments" class="form-control" ng-error-message="payment.errors.forms[index].installments"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label><?php echo $this->translate('Interest') ?></label>
+                            <input data-currency ng-model="form.interest" class="form-control" ng-error-message="payment.errors.forms[index].interest"/>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <button class="btn btn-success"><?php echo $this->translate('Save') ?></button>
+</form>
+

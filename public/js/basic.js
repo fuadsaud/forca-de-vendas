@@ -162,7 +162,7 @@ function dateFormat(string) {
     return string.replace(/(\d{4})-(\d{2})-(\d{2})/,'$3/$2/$1');
 }
 
-function addMessage(type, message) {
+function addMessage(type, message, container) {
     var spanX = $('<span>').attr('aria-hiden', 'true').text('x');
     var spanClose = $('<span>').addClass('sr-only').text('Close');
     var button = $('<button>').addClass('close').addClass('message-close').attr('data-dismiss', 'alert');
@@ -171,11 +171,17 @@ function addMessage(type, message) {
     $(button).append(spanX).append(spanClose);
     $(div).append(button);
     $(div).append(message);
+    if (!container) {
+        container = '#content';
+    }
 
-    $('#content').prepend(div);
+    $(container).prepend(div);
 
 }
 
-function closeCurrentMessages() {
+function closeCurrentMessages(container) {
+    if (!container) {
+        container = '#content';
+    }
     $('button.message-close').trigger('click');
 }

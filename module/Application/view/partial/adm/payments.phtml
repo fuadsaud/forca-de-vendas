@@ -1,0 +1,33 @@
+<?php
+//    $canEdit = $this->permissions()->isAllowed('payments', 'edit');
+    $canEdit = true;
+?>
+<?php echo $this->partial('partial/pagination.phtml', array('showFilter' => true, 'identifier' => 'payments', 'showInactiveFilter' => true)) ?>
+<div class="panel panel-default" ng-show="_new">
+    <div class="panel-heading">
+        <div class="action-cell text-right">
+            <button ng-click="_new = false" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
+                <i class="glyphicon glyphicon-trash"></i>
+                <span class="sr-only"><?php echo $this->translate('Delete') ?></span>
+            </button>
+        </div>
+    </div>
+    <div class="panel-body">
+        <?php echo $this->partial('partial/adm/payments_form.phtml', ['action' => 'save']) ?>
+    </div>
+</div>
+<div class="panel panel-default" ng-repeat="payment in payments | filter:filter">
+    <div class="panel-heading">
+        <div class="action-cell text-right">
+            <?php if (true || $this->permissions()->isAllowed('payments', 'delete')) : ?>
+                <button ng-click="delete_payment(payment.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
+                    <i class="glyphicon glyphicon-trash"></i>
+                    <span class="sr-only"><?php echo $this->translate('Delete') ?></span>
+                </button>
+            <?php endif ?>
+        </div>
+    </div>
+    <div class="panel-body">
+        <?php echo $this->partial('partial/adm/payments_form.phtml', ['action' => 'update']) ?>
+    </div>
+</div>

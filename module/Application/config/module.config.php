@@ -130,6 +130,10 @@ return array(
                         'uri' => '#/adm/products'
                     ),
                     array(
+                        'label' => 'Payments',
+                        'uri' => '#/adm/payments'
+                    ),
+                    array(
                         'label' => 'Categories',
                         'uri' => '#/adm/categories'
                     ),

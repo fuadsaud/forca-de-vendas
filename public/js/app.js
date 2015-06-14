@@ -41,6 +41,10 @@
                 controller: 'CategoriesController',
                 templateUrl: 'admcategories.html',
             })
+            .when('/adm/payments', {
+                controller: 'PaymentsController',
+                templateUrl: 'admpayments.html',
+            })
             .when('/products', {
                 controller: 'ProductsController',
                 templateUrl: 'products.html',
@@ -154,6 +158,11 @@
     }])
     .factory('Product', ['$resource', function($resource) {
         return $resource(BASEURL+'api/products/:id', {id: '@_id'}, {
+            update: {method: 'PUT', params: {id: '@id'}}
+        });
+    }])
+    .factory('Payment', ['$resource', function($resource) {
+        return $resource(BASEURL+'api/payments/:id', {id: '@_id'}, {
             update: {method: 'PUT', params: {id: '@id'}}
         });
     }])
@@ -448,5 +457,60 @@
                 render();
             }
         );
+    }])
+    .controller("PaymentsController", ['$scope', 'Payment', function($scope, Payment) {
+        var paymentsCrud = new CRUD($scope, Payment, 'payments', 'payment');
+        paymentsCrud.getList();
+
+        $scope.add_form = function(payment) {
+            if (!payment.forms) {
+                payment.forms = [];
+            }
+            payment.forms.push({
+                description: '',
+            });
+        }
+
+        $scope.remove_form = function(payment, index) {
+            payment.forms.splice(index, 1);
+        }
+
+        var beforeSaveUpdate = function(payment) {
+            var aux = angular.copy(payment);
+            $.each(aux.forms, function() {
+                if (this.interest) {
+                    this.interest = this.interest.replace(',','.');
+                }
+            })
+            return aux;
+        }
+        paymentsCrud.beforeSave = beforeSaveUpdate;
+        paymentsCrud.beforeUpdate = beforeSaveUpdate;
+
+        paymentsCrud.afterGet = function(payment) {
+            $.each(payment.forms, function() {
+                var aux = (""+this.interest).split('.');
+                if (aux.length == 1) {
+                    if (aux[0] != "") {
+                        aux.push("00");
+                    }
+                } else if (aux[1].length == 1) {
+                    aux[1] += "0";
+                }
+                this.interest = aux.join(',');
+            })
+            return payment;
+        }
+
+        paymentsCrud.afterUpdate= function(payment) {
+            closeCurrentMessages();
+            addMessage('success', 'Alterado com sucesso!')
+            return payment;
+        }
+
+        $scope.new_payments = function() {
+            $scope.payment = {};
+            $scope.add_form($scope.payment);
+        }
     }])
 })(jQuery);

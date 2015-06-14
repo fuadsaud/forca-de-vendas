@@ -56,4 +56,27 @@ class PaymentsTable extends AbstractTable
         $payment['forms'] = $table->fetchAll(['payment_id' => $payment['id']], ['paginated' => false])->toArray();
         return $payment;
     }
+
+    public function delete($where)
+    {
+        $table = $this->getTable();
+        $select = $table->getSql()->select();
+        $select->columns(array('id'))->where($where);
+        $ids = $table->selectWith($select)->toArray();
+        $result = false;
+        try {
+            $this->beginTransaction();
+            if (!empty($ids)) {
+                $ids = array_map(function($a) { return $a['id'];}, $ids);
+                $formTable = $this->getServiceLocator()->get('Application\Model\PaymentsFormsTable');
+                $formTable->delete(array('payment_id' => $ids));
+            }
+            $result = parent::delete($where);
+            $this->commit();
+        } catch (\Exception $e) {
+            $this->rollback();
+            throw new Exception\RuntimeException($e->getMessage());
+        }
+        return $result;
+    }
 }
