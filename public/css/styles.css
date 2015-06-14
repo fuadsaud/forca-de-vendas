@@ -1,0 +1,251 @@
+.btn-grid-form {
+    margin-top: 21px;
+}
+
+a {
+    cursor: pointer;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.m20-top-down {
+    margin: 20px 0;
+}
+
+.m0 {
+    margin: 0 !important;
+}
+
+.input-table {
+    border: none;
+    background: none;
+    width: 100%;
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.footer .text-muted {
+  margin: 20px 0;
+}
+
+
+/*EXTENSION OF BOOTSTRAP*/
+.text-left-not-xs, .text-left-not-sm, .text-left-not-md, .text-left-not-lg {
+    text-align: left;
+}
+.text-center-not-xs, .text-center-not-sm, .text-center-not-md, .text-center-not-lg {
+    text-align: center;
+}
+.text-right-not-xs, .text-right-not-sm, .text-right-not-md, .text-right-not-lg {
+    text-align: right;
+}
+.text-justify-not-xs, .text-justify-not-sm, .text-justify-not-md, .text-justify-not-lg {
+    text-align: justify;
+}
+
+@media (max-width: 767px) {
+    .text-left-not-xs, .text-center-not-xs, .text-right-not-xs, .text-justify-not-xs {
+        text-align: inherit;
+    }
+    .text-left-xs {
+        text-align: left;
+    }
+    .text-center-xs {
+        text-align: center;
+    }
+    .text-right-xs {
+        text-align: right;
+    }
+    .text-justify-xs {
+        text-align: justify;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+    .text-left-not-sm, .text-center-not-sm, .text-right-not-sm, .text-justify-not-sm {
+        text-align: inherit;
+    }
+    .text-left-sm {
+        text-align: left;
+    }
+    .text-center-sm {
+        text-align: center;
+    }
+    .text-right-sm {
+        text-align: right;
+    }
+    .text-justify-sm {
+        text-align: justify;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+    .text-left-not-md, .text-center-not-md, .text-right-not-md, .text-justify-not-md {
+        text-align: inherit;
+    }
+    .text-left-md {
+        text-align: left;
+    }
+    .text-center-md {
+        text-align: center;
+    }
+    .text-right-md {
+        text-align: right;
+    }
+    .text-justify-md {
+        text-align: justify;
+    }
+}
+@media (min-width: 1200px) {
+    .text-left-not-lg, .text-center-not-lg, .text-right-not-lg, .text-justify-not-lg {
+        text-align: inherit;
+    }
+    .text-left-lg {
+        text-align: left;
+    }
+    .text-center-lg {
+        text-align: center;
+    }
+    .text-right-lg {
+        text-align: right;
+    }
+    .text-justify-lg {
+        text-align: justify;
+    }
+}
+/*END OF EXTENSION OF BOOTSTRAP*/
+
+.relative {
+    position: relative;
+}
+
+.caret-left {
+    margin-right: 5px;
+}
+
+.link-bar {
+    position: absolute;
+    top: 12px;
+    right: 8px;
+}
+
+hr {
+    margin-top: 0px !important;
+}
+
+.table-row-title > div {
+    font-weight: bold;
+}
+
+.table-row {
+    border-top: 1px #ccc solid;
+}
+
+.table-row > div {
+    min-height: 30px;
+    padding-top: 5px;
+}
+
+.table-row .action-cell {
+    min-height: 30px;
+    padding-top: 5px;
+}
+
+.fake-btn {
+    border: none;
+    background: transparent;
+}
+
+.content-editable-container > * {
+    z-index: 10;
+}
+#ui-datepicker-div {
+    font-size:10px;
+}
+
+.select-group {
+    padding: 0!important;
+}
+
+.select-group select {
+    width: 47%;
+    height: 30px;
+    border: 0;
+    background: transparent;
+}
+.select-group i {
+    width: 6%;
+    text-align: center;
+    height: 30px;
+}
+
+.collapsed-row > div {
+    padding-left:0px;
+    padding-right:0px;
+}
+
+.collapsed-row > div:first-child {
+    padding-left: 15px;
+}
+
+.collapsed-row > div:last-child {
+    padding-right: 15px;
+}
+
+.product-detail ul
+{
+    padding: 0;
+}
+.product-detail li
+{
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
