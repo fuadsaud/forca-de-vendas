@@ -156,6 +156,9 @@
     .factory('Group', ['$resource', function($resource) {
         return $resource(BASEURL+'api/groups/:id');
     }])
+    .factory('Order', ['$resource', function($resource) {
+        return $resource(BASEURL+'api/orders/:id');
+    }])
     .factory('Product', ['$resource', function($resource) {
         return $resource(BASEURL+'api/products/:id', {id: '@_id'}, {
             update: {method: 'PUT', params: {id: '@id'}}
@@ -315,7 +318,7 @@
             $flow.upload();
         }
     }])
-    .controller("BasketController", function($scope, Client, Payment) {
+    .controller("BasketController", function($scope, Client, Payment, Order) {
         var Basket = $scope.$parent.BasketObject;
         $scope.products = Basket.getProducts();
 
@@ -385,6 +388,66 @@
                 }
             }
         })
+
+        $scope.finalize = function() {
+            var products = Basket.getProducts();
+            var client = Basket.getClient();
+            var paymentForm = Basket.getPaymentForm();
+            var hasError = false;
+
+            var order = {
+                items: []
+            }
+            closeCurrentMessages();
+            if (client) {
+                order.client_id = client.id
+                $.each(client.addresses, function() {
+                    if (this.type == 'billing') {
+                        order.charge_address_id = this.id;
+                    } else {
+                        order.deliver_address_id = this.id;
+                    }
+                });
+            } else {
+                addMessage('danger', 'Selecione o cliente!');
+                hasError = true;
+            }
+
+            if (paymentForm) {
+                order.payment_form_id = paymentForm.id;
+            } else {
+                addMessage('danger', 'Selecione a forma de pagamento!');
+                hasError = true;
+            }
+
+            if (products.length > 0) {
+                $.each(products, function() {
+                    order.items.push({
+                        product_id: this.id,
+                        quantity: this.quantity,
+                    })
+                })
+            } else {
+
+                addMessage('danger', 'Selecione ao menos um produto!');
+                hasError = true;
+            }
+
+            if (!hasError) {
+                Order.save(
+                    order,
+                    function(r){
+                        closeCurrentMessages();
+                        addMessage('success', 'Pedido #' + r.id +' criado com sucesso! O andamento de pedidos será realizado pelo setor de vendas através da ferramenta de ERP!', true);
+                        Basket.clean();
+                    },
+                    function(r){
+                        closeCurrentMessages();
+                        addMessage('danger', 'Ocorreu um erro ao realizar o pedido!', true);
+                    }
+                );
+            }
+        }
 
     })
     .controller("UsersController", ['$scope', '$route', '$routeParams', 'User', 'Group', function($scope, $route, $routeParams, User, Group) {

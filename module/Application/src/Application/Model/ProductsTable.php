@@ -63,7 +63,7 @@ class ProductsTable extends AbstractTable
 
     public function setPrice($id, $price)
     {
-        $oldPrice = $this->getPrice($id);
+        $oldPrice = $this->getPrice($id)['id'];
         if ($price != $oldPrice) {
             $pricesTable = $this->getServiceLocator()->get('ProductsPrices');
             $date = date('Y-m-dTH:i:s');
@@ -78,7 +78,9 @@ class ProductsTable extends AbstractTable
     public function find($id)
     {
         $result = parent::find($id);
-        $result['price'] = $this->getPrice($id);
+        $price = $this->getPrice($id);
+        $result['price'] = $price['price'];
+        $result['price_id'] = $price['id'];
         $result['categories'] = $this->getCategoriesIds($id);
         return $result;
     }
@@ -91,7 +93,7 @@ class ProductsTable extends AbstractTable
             new \Zend\Db\Sql\Predicate\IsNull('final_date')
         ))->current();
 
-        return $price['price'];
+        return $price;
     }
 
     public function getCategoriesIds($id)

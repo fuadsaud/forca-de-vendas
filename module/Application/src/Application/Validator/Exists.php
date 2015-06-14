@@ -9,10 +9,10 @@ use Zend\Validator\AbstractValidator;
 
 class Exists extends AbstractValidator
 {
-    const NOT_EXISTS = 'not_exists';
+    const MSG_NOT_EXISTS = 'msgNotExists';
 
     protected $messageTemplates = [
-        self::NOT_EXISTS => 'Entry does not exists',
+        self::MSG_NOT_EXISTS => 'Entry does not exists'
     ];
 
     protected $table;
@@ -39,6 +39,10 @@ class Exists extends AbstractValidator
             }
         } catch (Exception\UnknowRegistryException $e) {
             $result = false;
+        }
+
+        if (!$result) {
+            $this->error(self::MSG_NOT_EXISTS);
         }
 
         return $result;

@@ -41,6 +41,11 @@
     </head>
     <body>
         <?php echo $this->content; ?>
+        <footer class="footer">
+          <div class="container">
+            <p class="text-muted">&copy; <?php echo date('Y') ?> Todos os direitos reservados</p>
+          </div>
+        </footer>
         <?php echo $this->inlineScript() ?>
     </body>
 </html>

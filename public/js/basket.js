@@ -165,6 +165,14 @@ function Basket(localStorageService, scope, ProductResource, ClientResource){
         return $localStorage.get('basket_payment_form');
     }
 
+    this.clean = function() {
+        $localStorage.set('basket_payment_form', null);
+        $localStorage.set('basket_products', null);
+        $localStorage.set('basket_client', null);
+        $scope.change_basket_client = Date.now();
+        $scope.change_basket_products = Date.now();
+    }
+
     klass.updateTotals();
     klass.syncProducts();
     klass.syncClient();
