@@ -315,7 +315,7 @@
             $flow.upload();
         }
     }])
-    .controller("BasketController", function($scope, Client) {
+    .controller("BasketController", function($scope, Client, Payment) {
         var Basket = $scope.$parent.BasketObject;
         $scope.products = Basket.getProducts();
 
@@ -348,6 +348,42 @@
         Client.get({'show_all': 1}, function(r) {
             $scope.clients = r.clients;
             $scope.selected_client = Basket.getClient();
+        })
+
+        $scope.selected = {
+            payment: {},
+            payment_form: {}
+        }
+
+        $scope.$watch('selected.payment_form', function(value, old) {
+            if (value && !$.isEmptyObject(value)) {
+                Basket.setPaymentForm(value);
+            }
+        }, true)
+
+
+        Payment.get({'show_all': 1}, function(r) {
+            $scope.payments = r.payments;
+            var basket_form = Basket.getPaymentForm();
+            if (basket_form) {
+                var exists = false;
+                $.each($scope.payments, function() {
+                    var payment = this;
+                    if (payment.id == basket_form.payment_id) {
+                        $.each(payment.forms, function() {
+                            if (this.id == basket_form.id) {
+                                exists = true;
+                                $scope.selected.payment_form = this;
+                                $scope.selected.payment = payment;
+                            }
+                        })
+                        return false;
+                    }
+                })
+                if (!exists) {
+                    Basket.setPaymentForm(null);
+                }
+            }
         })
 
     })
@@ -504,7 +540,13 @@
 
         paymentsCrud.afterUpdate= function(payment) {
             closeCurrentMessages();
-            addMessage('success', 'Alterado com sucesso!')
+            addMessage('success', 'Alterado com sucesso!', true)
+            return payment;
+        }
+
+        paymentsCrud.afterSave= function(payment) {
+            closeCurrentMessages();
+            addMessage('success', 'Criado com sucesso!', true)
             return payment;
         }
 

@@ -150,6 +150,14 @@ function Basket(localStorageService, scope, ProductResource, ClientResource){
         }
     }
 
+    this.setPaymentForm = function(payment_form) {
+        $localStorage.set('basket_payment_form', payment_form);
+    }
+
+    this.getPaymentForm = function(payment_form) {
+        return $localStorage.get('basket_payment_form');
+    }
+
     klass.updateTotals();
     klass.syncProducts();
     klass.syncClient();

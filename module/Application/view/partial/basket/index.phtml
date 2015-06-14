@@ -1,22 +1,39 @@
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <div class="input-group">
-            <span class="input-group-addon"><?php echo $this->translate('Selected Client') ?></span>
-            <select ng-model="selected_client" class="form-control" ng-options="client as client.name for client in clients track by client.id"></select>
+<div class="row">
+    <div class="col-xs-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="input-group">
+                    <span class="input-group-addon"><?php echo $this->translate('Selected Client') ?></span>
+                    <select ng-model="selected_client" class="form-control" ng-options="client as client.name for client in clients track by client.id"></select>
+                </div>
+            </div>
+            <div class="panel-body" ng-show="selected_client">
+                <dl>
+                    <dt><?php echo $this->translate('Name') ?>:</dt>
+                    <dd>{{selected_client.name}}</dd>
+                    <dt><?php echo $this->translate('Trading Name') ?>:</dt>
+                    <dd>{{selected_client.trading_name}}<dd>
+                </dl>
+                <dl ng-repeat="address in selected_client.addresses">
+                    <dt ng-show="address.type == 'billing'"><?php echo $this->translate('Billing Address') ?></dt>
+                    <dt ng-show="address.type == 'delivery'"><?php echo $this->translate('Delivery Address') ?></dt>
+                    <dd>{{address.street}}, {{address.number}}, {{address.neighborhood}}, {{address.city}} - {{address.zipcode}} / {{address.state}}</dd>
+                </dl>
+            </div>
         </div>
     </div>
-    <div class="panel-body" ng-show="selected_client">
-        <dl>
-            <dt><?php echo $this->translate('Name') ?>:</dt>
-            <dd>{{selected_client.name}}</dd>
-            <dt><?php echo $this->translate('Trading Name') ?>:</dt>
-            <dd>{{selected_client.trading_name}}<dd>
-        </dl>
-        <dl ng-repeat="address in selected_client.addresses">
-            <dt ng-show="address.type == 'billing'"><?php echo $this->translate('Billing Address') ?></dt>
-            <dt ng-show="address.type == 'delivery'"><?php echo $this->translate('Delivery Address') ?></dt>
-            <dd>{{address.street}}, {{address.number}}, {{address.neighborhood}}, {{address.city}} - {{address.zipcode}} / {{address.state}}</dd>
-        </dl>
+    <div class="col-xs-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $this->translate('Payment') ?></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <select class="form-control" ng-model="selected.payment" ng-options="payment as payment.name for payment in payments track by payment.id"></select>
+                </div>
+                <div ng-repeat="form in selected.payment.forms">
+                    <input type="radio" ng-model="selected.payment_form" ng-value="form">{{form.description}}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="panel panel-primary">
