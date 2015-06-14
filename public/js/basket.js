@@ -139,13 +139,15 @@ function Basket(localStorageService, scope, ProductResource, ClientResource){
 
     this.syncClient = function() {
         var client = klass.getClient();
-        Client.get({id: client.id}, function(r) {
-            klass.setClient(r.client);
-            $scope.change_basket_client = Date.now();
-        }, function() {
-            klass.setClient(null);
-            $scope.change_basket_client = Date.now();
-        })
+        if (client) {
+            Client.get({id: client.id}, function(r) {
+                klass.setClient(r.client);
+                $scope.change_basket_client = Date.now();
+            }, function() {
+                klass.setClient(null);
+                $scope.change_basket_client = Date.now();
+            })
+        }
     }
 
     klass.updateTotals();
