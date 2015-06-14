@@ -1,28 +1,82 @@
+<div ng-show="product_detail"class="panel panel-success big-product" style="position:fixed; z-index:1;">
+    <div class="panel-heading">
+        <div class="panel-title">{{product_detail.name}}</div>
+    </div>
+    <div class="panel-body product-detail">
+        <a ng-click="showLess()"><?php echo $this->translate('Show less') ?></a>
+        <div class="row">
+            <div class="col-xs-4">
+                <img src="<?php echo $this->url()?>files.php/{{product_detail.id}}.png" class="img-responsive">
+            </div>
+            <div class="col-xs-8">
+                <ul>
+                    <li>
+                        <strong><?php echo $this->translate('Price') ?>:</strong>
+                        <span class="price">R$ <big>{{product_detail.price | splitMoney:0}}</big><small>,{{product_detail.price | splitMoney:1}}</small></span>
+                    </li>
+
+                    <li>
+                        <strong><?php echo $this->translate('Stock') ?>:</strong>
+                        <span class="stock">{{product_detail.stock_quantity}}</span>
+                    </li>
+                    <li>
+                        <strong><?php echo $this->translate('Description') ?>:</strong>
+                        <span>{{product_detail.description}}</span>
+                    </li>
+                    <li>
+                        <strong><?php echo $this->translate('Categories') ?>:</strong>
+                        <span class="label label-warning" style="margin-right:5px;" ng-repeat="category in getCategories(product_detail.categories)">{{category}}</span>
+                    </li>
+                </ul>
+                <hr>
+                <form class="row">
+                    <div class="col-xs-2">
+                        <input class="form-control" data-integer type="number" ng-model="product_detail.quantity">
+                    </div>
+                    <div class="col-xs-2">
+                        <button class="btn btn-success">Comprar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-sm-2">
         <strong>Categorias</strong>
         <hr>
         <ul class="nav nav-pills nav-stacked">
-            <li role="presentation" class="active"><a href="#">Sapatos</a></li>
-            <li role="presentation"><a href="#">Tenis</a></li>
-            <li role="presentation"><a href="#">Botas</a></li>
+            <li role="presentation" ng-class="{active: selected_category == null}"><a ng-click="filterBy(null)"><?php echo $this->translate('All') ?></a></li>
+            <li role="presentation" ng-class="{active: selected_category == category.id}" ng-repeat="category in categories"><a ng-click="filterBy(category)">{{category.name}}</a></li>
         </ul>
     </div>
     <div class="col-sm-10">
         <strong>Produtos</strong>
+        <?php echo $this->partial('partial/pagination.phtml', ['showFilter' => false, 'showAdd' => false, 'showInactiveFilter' => false, 'identifier' => 'products']) ?>
         <div class="row">
-            <div ng-repeat="product in products" class="col-sm-3">
+            <div ng-repeat="product in products" class="col-sm-3 product">
                 <div class="panel panel-success">
                     <div class="panel-heading">
-                        <div class="panel-title">{{product.name}}</div>
+                        <div class="panel-title product-title">{{product.name}}</div>
                     </div>
-                    <div class="panel-body">
-                        <img src="http://static5.netshoes.net/Produtos/tenis-oakley-two-barrel-2/02/654-3237-002/654-3237-002_zoom1.jpg" class="img-responsive">
-                        <span class="price">R$ <big>{{product.price | splitMoney:0}}</big><small>,{{product.price | splitMoney:1}}</small></span>
+                    <div class="panel-body product-detail">
+                        <img src="<?php echo $this->url()?>files.php/{{product.id}}.png" class="img-responsive product-img">
+                        <ul>
+                            <li>
+                                <strong><?php echo $this->translate('Price') ?>:</strong>
+                                <span class="price">R$ <big>{{product.price | splitMoney:0}}</big><small>,{{product.price | splitMoney:1}}</small></span>
+                            </li>
+
+                            <li>
+                                <strong><?php echo $this->translate('Stock') ?>:</strong>
+                                <span class="stock">{{product.stock_quantity}}</span>
+                            </li>
+                        </ul>
+                        <a ng-click="showMore($event, product)"><?php echo $this->translate('Show more') ?></a>
                         <hr>
                         <form class="row">
                             <div class="col-xs-6">
-                                <input class="form-control" type="number" ng-model="product.quantity">
+                                <input class="form-control" data-integer type="number" ng-model="product.quantity">
                             </div>
                             <div class="col-xs-6">
                                 <button class="btn btn-success">Comprar</button>

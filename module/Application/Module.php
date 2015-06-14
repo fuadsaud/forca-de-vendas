@@ -65,7 +65,7 @@ class Module
                 },
                 'Application\Api\Controller\Products' => function($sm) {
                     $products = $sm->getServiceLocator()->get('Application\Model\ProductsTable');
-                    return new Api\Controller\ApiController($products, 'product');
+                    return new Api\Controller\ProductsController($products, 'product');
                 },
                 'Application\Api\Controller\Categories' => function($sm) {
                     $model = $sm->getServiceLocator()->get('Application\Model\CategoriesTable');

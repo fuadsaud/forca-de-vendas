@@ -13,7 +13,8 @@
     "require": {
         "php": ">=5.3.3",
         "robmorgan/phinx": "*",
-        "zendframework/zendframework": "2.*"
+        "zendframework/zendframework": "2.*",
+        "flowjs/flow-php-server": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.2.*",

@@ -1,5 +1,5 @@
 (function($) {
-    var app = angular.module("forcaDeVendas", ['ngRoute', 'ngResource', 'ui.bootstrap']);
+    var app = angular.module("forcaDeVendas", ['ngRoute', 'ngResource', 'ui.bootstrap', 'flow']);
 
     window.currentEditableElement = null;
 
@@ -139,9 +139,70 @@
     .controller("MainController", function($scope) {
         $scope.test = 'oi';
     })
-    .controller("ProductsController", ["$scope", 'Product', function($scope, Product) {
+    .controller("ProductsController", ["$scope", 'Product', 'Category', function($scope, Product, Category) {
         var productsCrud = new CRUD($scope, Product, 'products', 'product');
-        productsCrud.getList();
+        Category.get({'show_all': 1}).$promise.then(function(r) {
+            $scope.categories = r.categories;
+            productsCrud.getList();
+        });
+
+        $scope.$watch('products', function() {
+            setTimeout(adjustProducts, 100);
+        })
+
+        $scope.getCategories = function(ids) {
+            console.log(ids);
+            if (ids && ids.length > 0) {
+                result = [];
+                $.each(ids, function() {
+                    var id = this;
+                    $.each($scope.categories, function() {
+                        if (this.id == id) {
+                            result.push(this.name);
+                            return false;
+                        }
+                    })
+                })
+                return result;
+            }
+        }
+
+        $scope.filterBy = function(category) {
+            if (category) {
+                productsCrud.getList(null, null, null, {'category_id': category.id})
+                $scope.selected_category = category.id;
+            } else {
+                productsCrud.getList()
+                $scope.selected_category = null;
+            }
+        }
+
+        $scope.product_detail = null;
+
+        $scope.showMore = function($event, product) {
+            var target = $($event.target).closest('.product');
+            var position = $(target).offset();
+            $('.big-product').css({
+                'width': $(target).width(),
+            }).offset(position);
+
+            $scope.product_detail = product;
+            var width = $('.container').width();
+            $('.big-product').animate({
+                'width': width,
+                'top': '10px',
+                'left': (($(window).width()-width)/2)+'px',
+            }, 1000)
+        }
+
+        $scope.showLess = function() {
+            $scope.product_detail = null;
+            $('.big-product').animate({
+                'width': '0',
+            })
+        }
+
+
     }])
     .controller("AdmProductsController", ['$scope','Product', 'Category', function($scope, Product, Category) {
         var productsCrud = new CRUD($scope, Product, 'products', 'product');
@@ -158,7 +219,7 @@
         productsCrud.beforeSave = beforeSaveUpdate;
         productsCrud.beforeUpdate = beforeSaveUpdate;
 
-        Category.get().$promise.then(function(r) {
+        Category.get({'show_all': 1}).$promise.then(function(r) {
             $scope.categories = r.categories;
             $scope.categories_options = {};
             $.each(r.categories, function() {
@@ -166,6 +227,7 @@
             });
             productsCrud.getList();
         })
+
         $scope.getCategories = function(ids) {
             if (ids && ids.length > 0) {
                 result = [];
@@ -180,6 +242,12 @@
                 })
                 return result;
             }
+        }
+
+        $scope.uploadFile = function(id, $flow)
+        {
+            $flow.opts.target = BASEURL+'api/products/'+id+'/image';
+            $flow.upload();
         }
     }])
     .controller("BasketController", function($scope) {

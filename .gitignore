@@ -18,3 +18,5 @@ module/Application/test/report
 logs/*
 module/Application/test/config/autoload/local.php
 module/Application/test/phinx.yml
+data/images/*
+data/temp_images/*

@@ -114,11 +114,24 @@ class ProductsTable extends AbstractTable
 
     protected function getBaseSelect($where, $options)
     {
-        $select = $this->getTable()->getSql()->select();
+        $category_id = null;
+        if (array_key_exists('category_id', $where)) {
+            $category_id = $where['category_id'];
+            unset($where['category_id']);
+        }
+        $select = parent::getBaseSelect($where, $options);
         $select->join(['p' => 'prices'], 'p.product_id = products.id', ['price'])
-            ->where($where)
-            ->where(new \Zend\Db\Sql\Predicate\IsNull('p.final_date'))
-            ->order($options['order']);
+            ->where(new \Zend\Db\Sql\Predicate\IsNull('p.final_date'));
+
+        if (!empty($category_id)) {
+            $table = $this->getServiceLocator()->get('ProductsCategories');
+            $subSelect = $table->getSql()->select();
+            $subSelect
+                ->columns(['product_id'])
+                ->where(['category_id' => $category_id]);
+            $select->where(new \Zend\Db\Sql\Predicate\In('products.id', $subSelect));
+        }
+
         return $select;
     }
 

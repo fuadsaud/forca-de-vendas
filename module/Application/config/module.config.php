@@ -37,7 +37,7 @@ return array(
             'api' => array(
                 'type'    => 'Segment',
                 'options' => array(
-                    'route'    => '/api/:controller[/:id]',
+                    'route'    => '/api/:controller[/:id[/:action]]',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Application\Api\Controller',
                     ),

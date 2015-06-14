@@ -111,6 +111,47 @@ function refreshComponents() {
         $('[data-select]').select2();
         $('[data-select]').hide();
     }, 500);
+
+}
+
+function adjustProducts() {
+    var cols = 4;
+    var imgs = $('.product-img');
+    var heights = [];
+
+    $.each(imgs, function(index, img) {
+        var pos = parseInt(index/cols);
+        if (heights.length <= pos) {
+            heights.push(0);
+        }
+        var aux = $(img).height();
+        if (aux > heights[pos]) {
+            heights[pos] = aux;
+        }
+    });
+
+    $.each(imgs, function(index, img) {
+        var pos = parseInt(index/cols);
+        $(img).css('margin', ((heights[pos]-$(img).height())/2)+'px 0');
+    });
+
+    heights = []
+    var titles = $('.product-title');
+    $.each(titles, function(index, title) {
+        var pos = parseInt(index/cols);
+        if (heights.length <= pos) {
+            heights.push(0);
+        }
+        var aux = $(title).height();
+        if (aux > heights[pos]) {
+            heights[pos] = aux;
+        }
+    });
+
+    $.each(titles, function(index, title) {
+        var pos = parseInt(index/cols);
+        $(title).css('margin', ((heights[pos]-$(title).height())/2)+'px 0');
+    });
 }
 
 function dateNormalize(string) {

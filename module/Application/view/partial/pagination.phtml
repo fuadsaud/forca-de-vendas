@@ -33,7 +33,7 @@ $canCreate = true;
             <div class="clearfix"></div>
         </nav>
     </div>
-    <?php if ($canCreate) : ?>
+    <?php if ($canCreate && (!isset($this->showAdd) || $this->showAdd)) : ?>
     <div class="col-md-1 col-sm-2 col-md-pull-11 col-sm-pull-10 col-xs-4">
         <a href="" class="btn btn-sm btn-primary m20-top-down" ng-click="focusName($event);_new=true;new_<?php echo $this->identifier ?>()">
           <span class="glyphicon glyphicon-plus"></span>&nbsp;
