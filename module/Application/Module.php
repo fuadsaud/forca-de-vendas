@@ -25,6 +25,17 @@ class Module
         $adapter = $sm->get('Zend\Db\Adapter\Adapter');
         $adapter->setProfiler($sm->get('Application\Db\Adapter\Profiler\Profiler'));
         \Locale::setDefault('pt_BR');
+
+        $translator = $sm->get('translator');
+        $translator->addTranslationFile(
+            'phpArray',
+            __DIR__.'/../../vendor/zendframework/zendframework/resources/languages/pt_BR/Zend_Validate.php', //or Zend_Captcha
+            'default',
+            'pt_BR'
+        );
+        \Zend\Validator\AbstractValidator::setDefaultTranslator($translator);
+
+
     }
 
     public function getConfig()

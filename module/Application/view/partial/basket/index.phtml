@@ -68,8 +68,14 @@
             </div>
         </div>
         <div class="row table-row">
-            <div class="col-xs-offset-8 col-xs-1 text-right">Total</div>
-            <div class="col-xs-2">R$ <big>{{$parent.basket.total | splitMoney:0}}</big><small>,{{$parent.basket.total | splitMoney:1}}</small></div>
+            <div class="col-xs-offset-7 col-xs-2 text-right">Total dos itens:</div>
+            <div class="col-xs-2">R$ <big>{{$parent.basket.total_items | splitMoney:0}}</big><small>,{{$parent.basket.total_items | splitMoney:1}}</small></div>
+        </div>
+        <div class="row text-success">
+            <strong>
+                <div class="col-xs-offset-8 col-xs-1 text-right">Total</div>
+                <div class="col-xs-2">R$ <big>{{$parent.basket.total | splitMoney:0}}</big><small>,{{$parent.basket.total | splitMoney:1}}</small></div>
+            </strong>
         </div>
     </div>
 </div>

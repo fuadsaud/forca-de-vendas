@@ -101,12 +101,18 @@ function Basket(localStorageService, scope, ProductResource, ClientResource){
 
     this.updateTotals = function() {
         var products = klass.getProducts();
-        var basket = {total: 0, quantity: 0};
+        var basket = {total: 0, total_items: 0, quantity: 0};
         $.each(products, function() {
             basket.quantity += parseInt(this.quantity);
             total = this.quantity * this.price
-            basket.total = Number((basket.total + total).toFixed(2));
+            basket.total_items = Number((basket.total_items + total).toFixed(2));
         })
+        var form = klass.getPaymentForm();
+        if (form && form.interest > 0) {
+            basket.total = Number((basket.total_items * (1 +(form.interest/100))).toFixed(2));
+        } else {
+            basket.total = basket.total_items;
+        }
         $scope.basket = basket;
     }
 
@@ -152,6 +158,7 @@ function Basket(localStorageService, scope, ProductResource, ClientResource){
 
     this.setPaymentForm = function(payment_form) {
         $localStorage.set('basket_payment_form', payment_form);
+        klass.updateTotals();
     }
 
     this.getPaymentForm = function(payment_form) {
