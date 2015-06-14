@@ -1,10 +1,12 @@
-function Basket(localStorageService, scope, ProductResource){
+function Basket(localStorageService, scope, ProductResource, ClientResource){
 
     var $localStorage = localStorageService;
 
     var $scope = scope;
 
     var Product = ProductResource;
+
+    var Client = ClientResource;
 
     var klass = this;
 
@@ -127,6 +129,26 @@ function Basket(localStorageService, scope, ProductResource){
         })
     }
 
+    this.setClient = function(client) {
+        $localStorage.set('basket_client', client);
+    }
+
+    this.getClient = function() {
+        return $localStorage.get('basket_client');
+    }
+
+    this.syncClient = function() {
+        var client = klass.getClient();
+        Client.get({id: client.id}, function(r) {
+            klass.setClient(r.client);
+            $scope.change_basket_client = Date.now();
+        }, function() {
+            klass.setClient(null);
+            $scope.change_basket_client = Date.now();
+        })
+    }
+
     klass.updateTotals();
     klass.syncProducts();
+    klass.syncClient();
 }

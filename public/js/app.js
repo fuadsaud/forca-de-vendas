@@ -162,8 +162,8 @@
             update: {method: 'PUT', params: {id: '@id'}}
         });
     }])
-    .controller("MainController", function($scope, localStorageService, Product) {
-        $scope.BasketObject = new Basket(localStorageService, $scope, Product)
+    .controller("MainController", function($scope, localStorageService, Product, Client) {
+        $scope.BasketObject = new Basket(localStorageService, $scope, Product, Client)
     })
     .controller("ProductsController", ["$scope", 'Product', 'Category', function($scope, Product, Category) {
         var productsCrud = new CRUD($scope, Product, 'products', 'product');
@@ -306,7 +306,7 @@
             $flow.upload();
         }
     }])
-    .controller("BasketController", function($scope) {
+    .controller("BasketController", function($scope, Client) {
         var Basket = $scope.$parent.BasketObject;
         $scope.products = Basket.getProducts();
 
@@ -324,6 +324,21 @@
         }
         $scope.$parent.$watch('change_basket_products', function() {
             $scope.products = Basket.getProducts();
+        })
+
+        $scope.$parent.$watch('change_basket_client', function() {
+            $scope.selected_client = Basket.getClient();
+        })
+
+        $scope.$watch('selected_client', function(value, old) {
+            if (value) {
+                Basket.setClient(value);
+            }
+        }, true)
+
+        Client.get({'show_all': 1}, function(r) {
+            $scope.clients = r.clients;
+            $scope.selected_client = Basket.getClient();
         })
 
     })
