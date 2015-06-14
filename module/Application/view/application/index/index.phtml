@@ -5,8 +5,8 @@
             <div class="pull-right">
                 <img class="pull-left" src="./img/shopping_cart.png" width="60px">
                 <div class="pull-right">
-                    5 itens<br>
-                    R$ 200,00
+                    {{basket.quantity}} itens<br>
+                    R$ {{basket.total | splitMoney:0}},{{basket.total | splitMoney:1}}
                 </div>
 
             </div>
@@ -34,7 +34,7 @@
             </nav>
         </div>
     </div>
-    <div ng-view class="container"></div>
+    <div ng-view class="container" id="content"></div>
 </div>
 
 <script id="main.html" type="text/ng-template">
@@ -57,7 +57,5 @@
 </script>
 
 <script id="basket.html" type="text/ng-template">
-    <div ng-controller="BasketController">
-        {{test}}
-    </div>
+    <?php echo $this->partial('partial/basket/index.phtml') ?>
 </script>

@@ -29,9 +29,9 @@
                     </li>
                 </ul>
                 <hr>
-                <form class="row">
+                <form class="row" ng-submit="buy(product_detail, product_detail.quantity); showLess();">
                     <div class="col-xs-2">
-                        <input class="form-control" data-integer type="number" ng-model="product_detail.quantity">
+                        <input class="form-control" ng-change="change(product_detail)" type="number" ng-model="product_detail.quantity">
                     </div>
                     <div class="col-xs-2">
                         <button class="btn btn-success">Comprar</button>
@@ -74,12 +74,13 @@
                         </ul>
                         <a ng-click="showMore($event, product)"><?php echo $this->translate('Show more') ?></a>
                         <hr>
-                        <form class="row">
+                        <form class="row" ng-submit="buy(product, product.quantity)">
                             <div class="col-xs-6">
-                                <input class="form-control" data-integer type="number" ng-model="product.quantity">
+                                <input class="form-control" type="number" ng-model="product.quantity">
                             </div>
                             <div class="col-xs-6">
-                                <button class="btn btn-success">Comprar</button>
+                                <button ng-hide="product.in_basket" class="btn btn-success"><?php echo $this->translate('Buy') ?></button>
+                                <button ng-show="product.in_basket" class="btn btn-success"><?php echo $this->translate('Change') ?></button>
                             </div>
                         </form>
                     </div>

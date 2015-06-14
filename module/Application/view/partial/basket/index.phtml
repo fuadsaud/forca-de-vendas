@@ -1,0 +1,32 @@
+<div class="row table-row-title">
+    <div class="col-xs-6"><?php echo $this->translate('Name') ?></div>
+    <div class="col-xs-1"><?php echo $this->translate('Quantity') ?></div>
+    <div class="col-xs-2"><?php echo $this->translate('Unit Price') ?></div>
+    <div class="col-xs-2"><?php echo $this->translate('Total Price') ?></div>
+</div>
+<div class="row table-row" ng-repeat="product in products">
+    <div class="col-xs-6">
+        {{product.name}}
+        <div class="row">
+            <div class="col-xs-3">
+                <img src="<?php echo $this->url()?>files.php/{{product.id}}.png" class="img-responsive product-img">
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-1">
+        <input type="number" ng-model="product.quantity" ng-change="change(product)" class="form-control"/>
+    </div>
+    <div class="col-xs-2">
+        <span class="price">R$ <big>{{product.price | splitMoney:0}}</big><small>,{{product.price | splitMoney:1}}</small></span>
+    </div>
+    <div class="col-xs-2">
+        <span class="price">R$ <big>{{product.price * product.quantity | splitMoney:0}}</big><small>,{{product.price * product.quantity | splitMoney:1}}</small></span>
+    </div>
+    <div class="col-xs-1">
+        <a ng-click="remove(product)" class="text-danger fake-btn"><span class="glyphicon glyphicon-trash"></span></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-offset-8 col-xs-1 text-right">Total</div>
+    <div class="col-xs-2">R$ <big>{{$parent.basket.total | splitMoney:0}}</big><small>,{{$parent.basket.total | splitMoney:1}}</small></div>
+</div>

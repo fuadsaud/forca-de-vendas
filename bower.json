@@ -28,12 +28,16 @@
     "angular-bootstrap": "~0.13.0",
     "jquery.inputmask": "~3.1.63",
     "select2": "~4.0.0",
-    "ng-flow": "~2"
+    "ng-flow": "~2",
+    "angular-local-storage": "~0.2.2"
   },
   "resolutions": {
     "angular": "1.4.0"
   },
   "exportsOverride": {
+    "angular-local-storage": {
+      ".": "dist/*.js"
+    },
     "angular*": {
       ".": [
         "*.js",

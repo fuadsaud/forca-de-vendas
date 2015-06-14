@@ -1,9 +1,12 @@
 (function($) {
-    var app = angular.module("forcaDeVendas", ['ngRoute', 'ngResource', 'ui.bootstrap', 'flow']);
+    var app = angular.module("forcaDeVendas", ['ngRoute', 'ngResource', 'ui.bootstrap', 'flow', 'LocalStorageModule']);
 
     window.currentEditableElement = null;
 
-    app.config(function($routeProvider) {
+    app.config(function($routeProvider, localStorageServiceProvider) {
+        localStorageServiceProvider.setPrefix('forca-de-vendas')
+            .setNotify(true, true)
+
         $routeProvider
             .when('/basket', {
                 controller: 'BasketController',
@@ -115,6 +118,9 @@
             if (result.length == 1) {
                 result += "0";
             }
+            if (index == 1) {
+                result = result[0]+result[1];
+            }
             return result;
         }
     })
@@ -136,11 +142,22 @@
             update: {method: 'PUT', params: {id: '@id'}}
         });
     }])
-    .controller("MainController", function($scope) {
-        $scope.test = 'oi';
+    .controller("MainController", function($scope, localStorageService, Product) {
+        $scope.BasketObject = new Basket(localStorageService, $scope, Product)
     })
     .controller("ProductsController", ["$scope", 'Product', 'Category', function($scope, Product, Category) {
         var productsCrud = new CRUD($scope, Product, 'products', 'product');
+        var basket = $scope.$parent.BasketObject;
+
+        productsCrud.afterGet = function(entry) {
+            var p = basket.getProduct(entry.id)
+            if (p) {
+                entry.quantity = p.quantity;
+                entry.in_basket = true;
+            }
+            return entry;
+        }
+
         Category.get({'show_all': 1}).$promise.then(function(r) {
             $scope.categories = r.categories;
             productsCrud.getList();
@@ -150,8 +167,20 @@
             setTimeout(adjustProducts, 100);
         })
 
+        $scope.buy = function(product, quantity) {
+            closeCurrentMessages();
+            if (basket.getProduct(product.id)) {
+                basket.changeQuantity(product.id, quantity);
+                addMessage('success', 'Alterado com sucesso!')
+            } else {
+                addMessage('success', 'Adicionado com sucesso!')
+                basket.addProduct(product, quantity);
+            }
+            product.quantity = basket.getProduct(product.id).quantity;
+            product.in_basket = true;
+        }
+
         $scope.getCategories = function(ids) {
-            console.log(ids);
             if (ids && ids.length > 0) {
                 result = [];
                 $.each(ids, function() {
@@ -178,6 +207,13 @@
         }
 
         $scope.product_detail = null;
+
+        $scope.change = function(product) {
+            product.quantity = parseInt(product.quantity);
+            if (isNaN(product.quantity) || product.quantity <= 0) {
+                product.quantity = 1;
+            }
+        }
 
         $scope.showMore = function($event, product) {
             var target = $($event.target).closest('.product');
@@ -251,7 +287,25 @@
         }
     }])
     .controller("BasketController", function($scope) {
-        $scope.test = 'Basket'
+        var Basket = $scope.$parent.BasketObject;
+        $scope.products = Basket.getProducts();
+
+        $scope.change = function(product) {
+            product.quantity = parseInt(product.quantity);
+            if (isNaN(product.quantity) || product.quantity <= 0) {
+                product.quantity = 1;
+            }
+            Basket.changeQuantity(product.id, product.quantity);
+        }
+
+        $scope.remove = function(product) {
+            Basket.removeProduct(product.id);
+            $scope.products = Basket.getProducts();
+        }
+        $scope.$parent.$watch('change_basket_products', function() {
+            $scope.products = Basket.getProducts();
+        })
+
     })
     .controller("UsersController", ['$scope', '$route', '$routeParams', 'User', 'Group', function($scope, $route, $routeParams, User, Group) {
         var usersCrud = new CRUD($scope, User, 'users', 'user');
