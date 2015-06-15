@@ -12,6 +12,7 @@
 
         <?php echo $this->headlink()
             ->appendStylesheet('vendor/bootstrap/css/bootstrap.css')
+            ->appendStylesheet('vendor/angular-chart.js/angular-chart.css')
             ->appendStylesheet('vendor/select2/select2.css')
             ->appendStylesheet('css/styles.css');
         ?>
@@ -27,6 +28,8 @@
             ->appendFile('vendor/angular-bootstrap/ui-bootstrap-tpls.min.js')
             ->appendFile('vendor/angular-resource/angular-resource.js')
             ->appendFile('vendor/angular-local-storage/angular-local-storage.js')
+            ->appendFile('vendor/Chart.js/Chart.js')
+            ->appendFile('vendor/angular-chart.js/angular-chart.js')
             ->appendFile('vendor/flow.js/flow.js')
             ->appendFile('vendor/ng-flow/ng-flow.js')
             ->appendFile('vendor/select2/select2.js')

@@ -1,0 +1,71 @@
+<h4>Relatório Mensal</h4>
+<div class="row">
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Totais de pedidos</div>
+            <div class="panel-body">
+                <canvas class="chart chart-line" data="counts" labels="labels"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Total Faturado</div>
+            <div class="panel-body">
+                <canvas class="chart chart-line" data="totals" labels="labels"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<h4>Relatório Anual</h4>
+<div class="row">
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Totais de pedidos</div>
+            <div class="panel-body">
+                <canvas class="chart chart-bar" data="counts_anual" labels="labels_anual"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Total Faturado</div>
+            <div class="panel-body">
+                <canvas class="chart chart-bar" data="totals_anual" labels="labels_anual"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <?php echo $this->partial('partial/pagination.phtml', ['identifier' => 'orders', 'showAdd' => false]) ?>
+        <table class="table table-stripped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Data</th>
+                    <th>Valor Total Itens</th>
+                    <th>Valor Total</th>
+                    <th>Forma de pagamento</th>
+                    <th>Cliente</th>
+                    <th>Endereços</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="order in orders">
+                    <td>{{order.id}}</td>
+                    <td>{{order.date}}</td>
+                    <td>R${{order.total_items}}</td>
+                    <td>R${{order.total}}</td>
+                    <td>{{order.payment_name}} - {{order.payment_description}}</td>
+                    <td>{{order.client_name}}</td>
+                    <td>
+                        {{order.billing_street}}, {{order.billing_number}}, {{order.billing_neighborhood}}, {{order.billing_city}} - {{order.billing_zipcode}} / {{order.billing_state}}<br>
+                        {{order.delivery_street}}, {{order.delivery_number}}, {{order.delivery_neighborhood}}, {{order.delivery_city}} - {{order.delivery_zipcode}} / {{order.delivery_state}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

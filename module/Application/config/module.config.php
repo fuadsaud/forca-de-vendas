@@ -141,7 +141,7 @@ return array(
             ),
             array(
                 'label' => 'Relatórios',
-                'uri' => '#/reports'
+                'uri' => '#/adm/orders',
             ),
         )
     ),

@@ -101,14 +101,16 @@ class OrdersTable extends AbstractTable
                 ['pf' => 'payments_forms'],
                 'pf.id = orders.payment_form_id',
                 [
-                    'description',
-                    'installments',
+                    'payment_description' => 'description',
+                    'payment_installments' => 'installments',
+                    'payment_interest' => 'interest',
                 ]
             )->join(
                 ['p' => 'payments'],
                 'pf.payment_id = p.id',
                 ['payment_name' => 'name']
-            );
+            )
+            ->order(['date' => 'DESC']);
 
         return $select;
     }
@@ -128,5 +130,59 @@ class OrdersTable extends AbstractTable
     public function delete($where)
     {
         throw new Exception();
+    }
+
+    public function relatorioMensal()
+    {
+        $table = $this->getTable();
+        $select = $table->getSql()->select();
+        $select->join(['i' => 'order_items'], 'i.order_id = orders.id', [])
+            ->join(['pr' => 'prices'], 'pr.id = i.price_id', [])
+            ->join(['pf' => 'payments_forms'], 'pf.id = orders.payment_form_id', [])
+            ->columns([
+                'id',
+                'total' => new \Zend\Db\Sql\Expression('SUM(pr.price * i.quantity) * (1 + pf.interest/100)'),
+                'date'
+            ])
+            ->group(['orders.id']);
+        $mainSelect = $table->getSql()->select();
+        $mainSelect->join(['a' => $select], 'a.id = orders.id', [])
+            ->columns([
+                'total' => new \Zend\Db\Sql\Expression('SUM(a.total)'),
+                'count' => new \Zend\Db\Sql\Expression('COUNT(orders.id)'),
+                'date' => new \Zend\Db\Sql\Expression('CONCAT(MONTH(orders.date),\'/\', YEAR(orders.date))')
+            ])
+            ->group([
+                new \Zend\Db\Sql\Expression('YEAR(orders.date)'),
+                new \Zend\Db\Sql\Expression('MONTH(orders.date)')
+            ])
+            ->where('YEAR(orders.date) = '.date('Y'));
+        return $table->selectWith($mainSelect)->toArray();
+    }
+
+    public function relatorioAnual()
+    {
+        $table = $this->getTable();
+        $select = $table->getSql()->select();
+        $select->join(['i' => 'order_items'], 'i.order_id = orders.id', [])
+            ->join(['pr' => 'prices'], 'pr.id = i.price_id', [])
+            ->join(['pf' => 'payments_forms'], 'pf.id = orders.payment_form_id', [])
+            ->columns([
+                'id',
+                'total' => new \Zend\Db\Sql\Expression('SUM(pr.price * i.quantity) * (1 + pf.interest/100)'),
+                'date'
+            ])
+            ->group(['orders.id']);
+        $mainSelect = $table->getSql()->select();
+        $mainSelect->join(['a' => $select], 'a.id = orders.id', [])
+            ->columns([
+                'total' => new \Zend\Db\Sql\Expression('SUM(a.total)'),
+                'count' => new \Zend\Db\Sql\Expression('COUNT(orders.id)'),
+                'date' => new \Zend\Db\Sql\Expression('YEAR(orders.date)')
+            ])
+            ->group([
+                new \Zend\Db\Sql\Expression('YEAR(orders.date)'),
+            ]);
+        return $table->selectWith($mainSelect)->toArray();
     }
 }

@@ -1,5 +1,5 @@
 (function($) {
-    var app = angular.module("forcaDeVendas", ['ngRoute', 'ngResource', 'ui.bootstrap', 'flow', 'LocalStorageModule']);
+    var app = angular.module("forcaDeVendas", ['ngRoute', 'ngResource', 'ui.bootstrap', 'flow', 'LocalStorageModule', 'chart.js']);
 
     window.currentEditableElement = null;
 
@@ -44,6 +44,10 @@
             .when('/adm/payments', {
                 controller: 'PaymentsController',
                 templateUrl: 'admpayments.html',
+            })
+            .when('/adm/orders', {
+                controller: 'OrdersController',
+                templateUrl: 'admorders.html',
             })
             .when('/products', {
                 controller: 'ProductsController',
@@ -618,4 +622,47 @@
             $scope.add_form($scope.payment);
         }
     }])
+    .controller('OrdersController', function($scope, $http, Order) {
+        var ordersCrud = new CRUD($scope, Order, 'orders', 'order');
+        ordersCrud.afterGet = function(order) {
+            total = 0;
+            $.each(order.items, function() {
+                total += this.price * this.quantity;
+            });
+            order.total_items = total.toFixed(2).replace('.', ',');
+            if (order.payment_interest > 0) {
+                order.total = (total * (1 + order.payment_interest/100)).toFixed(2).replace('.',',');
+            } else {
+                order.total = order.total_items;
+            }
+            order.date = dateFormat(order.date).split(' ')[0];
+            return order;
+        }
+        ordersCrud.getList();
+
+        $http.get(BASEURL+'api/orders/0/mensal').success(function(r) {
+            $scope.labels = [];
+            $scope.totals = [[]];
+            $scope.counts = [[]];
+
+            $.each(r, function() {
+                $scope.labels.push(this.date);
+                $scope.counts[0].push(this.count);
+                $scope.totals[0].push(Number(parseFloat(this.total).toFixed(2)));
+            })
+        })
+
+        $http.get(BASEURL+'api/orders/0/anual').success(function(r) {
+            $scope.labels_anual = [];
+            $scope.totals_anual = [[]];
+            $scope.counts_anual = [[]];
+
+            $.each(r, function() {
+                $scope.labels_anual.push(this.date);
+                $scope.counts_anual[0].push(this.count);
+                $scope.totals_anual[0].push(Number(parseFloat(this.total).toFixed(2)));
+            })
+
+        })
+    })
 })(jQuery);

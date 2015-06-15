@@ -88,7 +88,7 @@ class Module
                 },
                 'Application\Api\Controller\Orders' => function($sm) {
                     $model = $sm->getServiceLocator()->get('Application\Model\OrdersTable');
-                    return new Api\Controller\ApiController($model, 'order', 'orders');
+                    return new Api\Controller\OrdersController($model, 'order', 'orders');
                 },
             )
         );
