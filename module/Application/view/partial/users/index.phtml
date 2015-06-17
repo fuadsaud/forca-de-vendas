@@ -6,29 +6,32 @@
     <div ng-switch-when="list">
         <?php echo $this->partial('partial/pagination.phtml', array('showFilter' => true, 'identifier' => 'users', 'showInactiveFilter' => true)) ?>
         <div class="row table-row-title">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <a ng-column-order="name" ng-element-name="user"><?php echo $this->translate('Name') ?></a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a ng-column-order="email" ng-element-name="user"><?php echo $this->translate('Email') ?></a>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <?php echo $this->translate('Groups') ?>
+            </div>
+            <div class="col-md-3">
+                Alterar Senha
             </div>
         </div>
         <div class="row table-row" ng-show="_new">
             <form name="user_form" ng-submit="save_user(user)">
-                <div class="col-xs-3">
+                <div class="col-xs-2">
                     <div>
                         <input class="form-control" ng-model="user.name" type="text" ng-error-message="user.errors.name" >
                     </div>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                     <div>
                         <input class="form-control" ng-model="user.email" type="email" ng-error-message="user.errors.email">
                     </div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-2">
                     <div>
                         <select ng-options="group.id as group.name for group in groups" class="form-control" ng-model="user.group_id" ng-error-message="user.errors.group_id"></select>
                     </div>
@@ -37,14 +40,19 @@
             </form>
         </div>
         <div class="row table-row" ng-repeat="user in users | filter:filter" ng-class="{'bg-danger': user.active == 0}">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div<?php if ($canEdit): ?> ng-content-editable="user:text"<?php endif ?> ng-model="user.name" data-errors="user.errors.name">{{user.name}}&nbsp;</div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div<?php if ($canEdit): ?> ng-content-editable="user:text"<?php endif ?> ng-model="user.email" data-errors="user.errors.email">{{user.email}}&nbsp;</div>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <div<?php if ($canEdit): ?> ng-content-editable="user:select" data-options="groups_options"<?php endif ?> ng-model="user.group_id" data-errors="user.errors.group_id">{{user.group_name}}</div>
+            </div>
+            <div class="col-md-2">
+                <?php if ($canEdit): ?>
+                    <a href="{{user.change_url}}">Alterar a senha</a>
+                <?php endif ?>
             </div>
             <div class="col-xs-2 action-cell text-right">
                 <?php if ($this->permissions()->isAllowed('users', 'delete')) : ?>

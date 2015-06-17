@@ -1,6 +1,5 @@
 <?php
-//    $canEdit = $this->permissions()->isAllowed('products', 'edit');
-    $canEdit = true;
+    $canEdit = $this->permissions()->isAllowed('products', 'edit');
 ?>
 <?php echo $this->partial('partial/pagination.phtml', array('showFilter' => true, 'identifier' => 'products', 'showInactiveFilter' => true)) ?>
 <div class="row table-row-title">
@@ -68,7 +67,9 @@
     </div>
     <div class="col-xs-2">
         <div flow-init="{singleFile: true}" flow-files-submitted="uploadFile(product.id, $flow)" flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]">
-            <span class="btn btn-success" flow-btn>Upload File</span>
+            <?php if ($this->permissions('products', 'update')) : ?>
+                <span class="btn btn-success" flow-btn>Upload File</span>
+            <?php endif ?>
             <img ng-show="$flow.files.length == 0" src="<?php echo $this->url() ?>files.php/{{product.id}}.png" class="img-responsive" />
             <div ng-show="$flow.files.length > 0">
                 <img flow-img="$flow.files[0]" class="img-responsive"/>
@@ -82,7 +83,7 @@
         <div<?php if ($canEdit): ?> ng-content-editable="product:integer" <?php endif ?> ng-model="product.stock_quantity" data-errors="product.errors.stock_quantity">{{product.stock_quantity}}</div>
     </div>
     <div class="col-xs-1 action-cell text-right">
-        <?php if (true || $this->permissions()->isAllowed('products', 'delete')) : ?>
+        <?php if ($this->permissions()->isAllowed('products', 'delete')) : ?>
             <button ng-show="product.active==1" ng-click="delete_product(product.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
                 <i class="glyphicon glyphicon-trash"></i>
                 <span class="sr-only"><?php echo $this->translate('Delete') ?></span>

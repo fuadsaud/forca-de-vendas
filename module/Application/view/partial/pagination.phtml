@@ -1,6 +1,5 @@
 <?php
-//    $canCreate = $this->permissions()->isAllowed($this->identifier, 'create');
-$canCreate = true;
+    $canCreate = $this->permissions()->isAllowed($this->identifier, 'create');
 ?>
 <div class="row">
     <div class="col-md-4 col-sm-5 col-xs-12<?php if ($canCreate) : ?> col-md-push-1 col-sm-push-1<?php endif ?>">

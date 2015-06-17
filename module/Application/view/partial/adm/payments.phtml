@@ -1,6 +1,5 @@
 <?php
-//    $canEdit = $this->permissions()->isAllowed('payments', 'edit');
-    $canEdit = true;
+    $canEdit = $this->permissions()->isAllowed('payments', 'edit');
 ?>
 <?php echo $this->partial('partial/pagination.phtml', array('showFilter' => true, 'identifier' => 'payments', 'showInactiveFilter' => true)) ?>
 <div class="panel panel-default" ng-show="_new">
@@ -19,7 +18,7 @@
 <div class="panel panel-default" ng-repeat="payment in payments | filter:filter">
     <div class="panel-heading">
         <div class="action-cell text-right">
-            <?php if (true || $this->permissions()->isAllowed('payments', 'delete')) : ?>
+            <?php if ($this->permissions()->isAllowed('payments', 'delete')) : ?>
                 <button ng-click="delete_payment(payment.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
                     <i class="glyphicon glyphicon-trash"></i>
                     <span class="sr-only"><?php echo $this->translate('Delete') ?></span>

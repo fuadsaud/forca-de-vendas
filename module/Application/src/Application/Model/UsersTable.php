@@ -60,6 +60,7 @@ class UsersTable extends AbstractTable
         unset($user['password']);
         $model = $this->getServiceLocator()->get('Application\Model\GroupsTable');
         $user['group'] = $model->find($user['group_id']);
+        $user['change_url'] = $this->getChangeUrl($user);
         return $user;
     }
 
@@ -71,7 +72,10 @@ class UsersTable extends AbstractTable
 
         $result = parent::save($id, $data);
         if (is_null($id) && $result) {
-            $this->sendWelcomeMail($result);
+            try {
+//                $this->sendWelcomeMail($result);
+            } catch (\Exception $e) {
+            }
         }
         return $result;
     }
@@ -115,7 +119,7 @@ class UsersTable extends AbstractTable
             ->addTo($user['email'], $user['name'])
             ->setSubject('Bem Vindo(a) ao Força de Vendas');
 
-        $html = new MimePart($this->getWelcomeHtml($user, $this->generateHash($user)));
+        $html = new MimePart($this->getWelcomeHtml($user));
         $html->type = "text/html";
 
         $body = new MimeMessage();
@@ -123,20 +127,27 @@ class UsersTable extends AbstractTable
         $message->setBody($body);
 
         $transport->send($message);
+
     }
 
-    protected function getWelcomeHtml($user, $hash)
+    protected function getChangeUrl($user)
     {
         $config = $this->getServiceLocator()->get('config');
-        $url = $config['external_url'].'/change-password';
+        $hash = $this->generateHash($user);
+        $url = $config['external_url'].'/change-password#/users/'.$user['id'].'/welcome/'.$hash;
+        return $url;
+    }
+
+    protected function getWelcomeHtml($user)
+    {
         $name = $user['name'];
-        $id = $user['id'];
+        $url = $this->getChangeUrl($user);
         $html = <<<HTML
 <html>
     <body>
         <strong>Olá $name,</strong><br/>
         <p>Seja bem-vindo(a) ao sistema de força de vendas!</p>
-        <p>Para começar a utilizar o sistema é necessário acessar <a href="$url#/users/$id/welcome/$hash">$url#/users/$id/welcome/$hash</a> e definir a sua senha de acesso.</p>
+        <p>Para começar a utilizar o sistema é necessário acessar <a href="$url">$url</a> e definir a sua senha de acesso.</p>
         <br/><br/>
         <strong>Atenciosamente,</strong>
         <br/><br/>

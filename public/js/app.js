@@ -59,8 +59,8 @@
                 templateUrl: 'users.html',
             })
             .otherwise({
-                controller: 'MainController',
-                templateUrl: 'main.html',
+                controller: 'ProductsController',
+                templateUrl: 'products.html',
             });
 
     })
@@ -463,6 +463,9 @@
     })
     .controller("UsersController", ['$scope', '$route', '$routeParams', 'User', 'UserPassword', 'Group', function($scope, $route, $routeParams, User, UserPassword, Group) {
         var usersCrud = new CRUD($scope, User, 'users', 'user');
+
+        var oldSave = usersCrud.save;
+
         var hash;
 
         var render = function() {

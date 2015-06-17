@@ -1,6 +1,5 @@
 <?php
-//    $canEdit = $this->permissions()->isAllowed('clients', 'edit');
-    $canEdit = true;
+    $canEdit = $this->permissions()->isAllowed('clients', 'edit');
 ?>
 
 <div ng-switch="renderAction">
@@ -34,13 +33,13 @@
                 <div<?php if ($canEdit): ?> ng-content-editable="client:integer"<?php endif ?> ng-model="client.cnpj" data-errors="client.errors.cnpj">{{client.cnpj}}&nbsp;</div>
             </div>
             <div class="col-xs-2 action-cell text-right">
-                <?php if (true || $this->permissions()->isAllowed('clients', 'update')) : ?>
+                <?php if ($this->permissions()->isAllowed('clients', 'update')) : ?>
                     <a href="#/adm/clients/edit/{{client.id}}" class="fake-btn text-primary" title="<?php echo $this->translate('Edit') ?>" >
                         <i class="glyphicon glyphicon-pencil"></i>
                         <span class="sr-only"><?php echo $this->translate('Edit') ?></span>
                     </a>
                 <?php endif ?>
-                <?php if (true || $this->permissions()->isAllowed('clients', 'delete')) : ?>
+                <?php if ($this->permissions()->isAllowed('clients', 'delete')) : ?>
                     <button ng-click="delete_client(client.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
                         <i class="glyphicon glyphicon-trash"></i>
                         <span class="sr-only"><?php echo $this->translate('Delete') ?></span>

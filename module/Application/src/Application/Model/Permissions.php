@@ -132,6 +132,7 @@ class Permissions
         $acl->addResource(new Resource('users'));
         $acl->addResource(new Resource('categories'));
         $acl->addResource(new Resource('payments'));
+        $acl->addResource(new Resource('orders'));
         $acl->addResource(new Resource('reports'));
         return $this;
     }

@@ -1,6 +1,5 @@
 <?php
-//    $canEdit = $this->permissions()->isAllowed('categories', 'edit');
-    $canEdit = true;
+    $canEdit = $this->permissions()->isAllowed('categories', 'edit');
 ?>
 <?php echo $this->partial('partial/pagination.phtml', array('showFilter' => true, 'identifier' => 'categories', 'showInactiveFilter' => true)) ?>
 <div class="row table-row-title">
@@ -23,7 +22,7 @@
         <div<?php if ($canEdit): ?> ng-content-editable="category:text"<?php endif ?> ng-model="category.name" data-errors="category.errors.name">{{category.name}}&nbsp;</div>
     </div>
     <div class="col-xs-2 action-cell text-right">
-        <?php if (true || $this->permissions()->isAllowed('categories', 'delete')) : ?>
+        <?php if ($this->permissions()->isAllowed('categories', 'delete')) : ?>
             <button ng-show="category.active==1" ng-click="delete_category(category.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
                 <i class="glyphicon glyphicon-trash"></i>
                 <span class="sr-only"><?php echo $this->translate('Delete') ?></span>
