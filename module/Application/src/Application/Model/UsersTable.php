@@ -128,7 +128,7 @@ class UsersTable extends AbstractTable
     protected function getWelcomeHtml($user, $hash)
     {
         $config = $this->getServiceLocator()->get('config');
-        $url = $config['external_url'];
+        $url = $config['external_url'].'/api-change-password/';
         $name = $user['name'];
         $id = $user['id'];
         $html = <<<HTML
