@@ -128,7 +128,7 @@ class UsersTable extends AbstractTable
     protected function getWelcomeHtml($user, $hash)
     {
         $config = $this->getServiceLocator()->get('config');
-        $url = $config['external_url'].'/api-change-password/';
+        $url = $config['external_url'].'/change-password';
         $name = $user['name'];
         $id = $user['id'];
         $html = <<<HTML
@@ -136,7 +136,7 @@ class UsersTable extends AbstractTable
     <body>
         <strong>Olá $name,</strong><br/>
         <p>Seja bem-vindo(a) ao sistema de força de vendas!</p>
-        <p>Para começar a utilizar o sistema é necessário acessar <a href="$url/#/users/$id/welcome/$hash">$url/#/users/$id/welcome/$hash</a> e definir a sua senha de acesso.</p>
+        <p>Para começar a utilizar o sistema é necessário acessar <a href="$url#/users/$id/welcome/$hash">$url#/users/$id/welcome/$hash</a> e definir a sua senha de acesso.</p>
         <br/><br/>
         <strong>Atenciosamente,</strong>
         <br/><br/>
