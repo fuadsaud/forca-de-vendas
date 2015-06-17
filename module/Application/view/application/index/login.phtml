@@ -1,0 +1,11 @@
+<?php
+$form = $this->form;
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+<h2 class="form-signin-heading"><?php echo $this->translate('Please sign in');?></h2>
+<?php echo $this->formRow($form->get('email')); ?>
+<?php echo $this->formRow($form->get('password')); ?>
+<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo $this->translate('Sign in');?></button>
+<?php echo $this->form()->closeTag(); ?>

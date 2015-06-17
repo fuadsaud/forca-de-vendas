@@ -58,6 +58,8 @@ class UsersTable extends AbstractTable
     protected function filterData($user)
     {
         unset($user['password']);
+        $model = $this->getServiceLocator()->get('Application\Model\GroupsTable');
+        $user['group'] = $model->find($user['group_id']);
         return $user;
     }
 
@@ -78,6 +80,15 @@ class UsersTable extends AbstractTable
     {
         $data = sha1($user['email'].$user['id'].$user['name'].'FORCADEVENDAS');
         return $data;
+    }
+
+    public function authenticate($params)
+    {
+        $sm = $this->getServiceLocator();
+        $auth = $sm->get('Application\Auth');
+
+        $authAdapter = new AuthAdapter($params['email'], $params['password'], $this);
+        return $auth->authenticate($authAdapter);
     }
 
     public function sendWelcomeMail($id)

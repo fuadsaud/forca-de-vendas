@@ -152,6 +152,11 @@
             update: {method: 'PUT', params: {id: '@id'} }
         });
     }])
+    .factory('UserPassword', ['$resource', function($resource) {
+        return $resource(BASEURL+'api-change-password/:id/:hash', {id: '@_id', hash: '@_hash'}, {
+            update: {method: 'PUT', params: {id: '@id', hash: '@hash'} }
+        });
+    }])
     .factory('Client', ['$resource', function($resource) {
         return $resource(BASEURL+'api/clients/:id', {id: '@_id'}, {
             update: {method: 'PUT', params: {id: '@id'} }
@@ -320,6 +325,8 @@
         {
             $flow.opts.target = BASEURL+'api/products/'+id+'/image';
             $flow.upload();
+            closeCurrentMessages();
+            addMessage('success', 'Imagem inserida com sucesso!');
         }
     }])
     .controller("BasketController", function($scope, Client, Payment, Order) {
@@ -454,8 +461,9 @@
         }
 
     })
-    .controller("UsersController", ['$scope', '$route', '$routeParams', 'User', 'Group', function($scope, $route, $routeParams, User, Group) {
+    .controller("UsersController", ['$scope', '$route', '$routeParams', 'User', 'UserPassword', 'Group', function($scope, $route, $routeParams, User, UserPassword, Group) {
         var usersCrud = new CRUD($scope, User, 'users', 'user');
+        var hash;
 
         var render = function() {
             var renderAction = $route.current.action;
@@ -471,8 +479,8 @@
                 })
             } else if (renderAction == 'welcome') {
                 var id = $routeParams.id;
-                var hash = $routeParams.hash;
-                User.get({id: id, hash: hash}).$promise.then(function(r) {
+                hash = $routeParams.hash;
+                UserPassword.get({id: id, hash: hash}).$promise.then(function(r) {
                     $scope.user = r.user;
                 }, function(r) {
                     window.location.href = BASEURL;
@@ -483,8 +491,15 @@
 
         $scope.set_password = function(user) {
             if (user.password) {
-                usersCrud.update(user).$promise.then(function(r) {
+                var usersPasswordCrud = new CRUD($scope, UserPassword, 'users', 'user');
+                var entry = angular.copy(user);
+                entry.hash = hash;
+                usersPasswordCrud.update(entry).$promise.then(function(r) {
                     window.location.href = BASEURL;
+                }, function() {
+                    closeCurrentMessages();
+                    addMessage('danger', 'Senhas não conferem!');
+                    $scope.user = user;
                 });
             }
         }

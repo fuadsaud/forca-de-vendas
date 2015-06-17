@@ -20,6 +20,36 @@ return array(
                     ),
                 ),
             ),
+            'login' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/login',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action'     => 'login',
+                    ),
+                ),
+            ),
+            'logout' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/logout',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action'     => 'logout',
+                    ),
+                ),
+            ),
+            'change_password' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/change-password',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action'     => 'change-password',
+                    ),
+                ),
+            ),
             'addresses' => array(
                 'type'    => 'Segment',
                 'options' => array(
@@ -31,6 +61,17 @@ return array(
                     'constraints' => array(
                         'id' => '[0-9]+',
                         'client_id' => '[0-9]+',
+                    ),
+                ),
+            ),
+            'api_password' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route'    => '/api-change-password/:id/:hash',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Api\Controller',
+                        'controller' => 'Users',
+                        'action' => 'change-password',
                     ),
                 ),
             ),
@@ -119,29 +160,35 @@ return array(
                 'pages' => array(
                     array(
                         'label' => 'Users',
-                        'uri' => '#/adm/users'
+                        'uri' => '#/adm/users',
+                        'permissions' => array('identifier' => 'users', 'method' => 'retrieve_list'),
                     ),
                     array(
                         'label' => 'Clients',
-                        'uri' => '#/adm/clients/list'
+                        'uri' => '#/adm/clients/list',
+                        'permissions' => array('identifier' => 'clients', 'method' => 'retrieve_list'),
                     ),
                     array(
                         'label' => 'Products',
-                        'uri' => '#/adm/products'
+                        'uri' => '#/adm/products',
+                        'permissions' => array('identifier' => 'products', 'method' => 'retrieve_list'),
                     ),
                     array(
                         'label' => 'Payments',
-                        'uri' => '#/adm/payments'
+                        'uri' => '#/adm/payments',
+                        'permissions' => array('identifier' => 'payments', 'method' => 'retrieve_list'),
                     ),
                     array(
                         'label' => 'Categories',
-                        'uri' => '#/adm/categories'
+                        'uri' => '#/adm/categories',
+                        'permissions' => array('identifier' => 'categories', 'method' => 'retrieve_list'),
                     ),
                 ),
             ),
             array(
                 'label' => 'Relatórios',
                 'uri' => '#/adm/orders',
+                'permissions' => array('identifier' => 'reports', 'method' => 'retrieve_list'),
             ),
         )
     ),

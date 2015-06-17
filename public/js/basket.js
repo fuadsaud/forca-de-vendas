@@ -27,7 +27,7 @@ function Basket(localStorageService, scope, ProductResource, ClientResource){
 
     this.addProduct = function(product, quantity) {
         var products = klass.getProducts();
-        if (!quantity) {
+        if (!quantity || quantity <= 0) {
             quantity = 1;
         }
         var exists = false;

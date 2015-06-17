@@ -45,4 +45,5 @@ return [
     'Interest' => 'Juros(%)',
     'Form' => 'Forma',
     'Show Inactive' => 'Mostrar Inativos',
+    'Please sign in' => 'Informe seu usuário e senha'
 ];

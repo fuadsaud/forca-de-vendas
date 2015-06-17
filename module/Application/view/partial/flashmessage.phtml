@@ -1,0 +1,31 @@
+<?php
+
+$types = array('error' => 'danger', 'success' => 'success');
+$layoutMessages = $this->layout()->messages;
+if ($layoutMessages && is_array($layoutMessages)) :
+    foreach ($layoutMessages as $message) :
+?>
+        <div class="alert alert-<?php echo $types[$message['type']] ?> alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <?php echo $message['text'] ?>
+        </div>
+
+<?php
+    endforeach;
+endif;
+
+foreach ($types as $type => $class) :
+    $method = "get{$type}Messages";
+    $messages = $this->flashMessenger()
+        ->getPluginFlashMessenger()
+        ->$method();
+    foreach($messages as $message) :
+?>
+        <div class="alert alert-<?php echo $class ?> alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <?php echo $message ?>
+        </div>
+<?php
+    endforeach;
+endforeach;
+?>

@@ -12,6 +12,7 @@ namespace Application;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Authentication\AuthenticationService;
 
 class Module
 {
@@ -35,6 +36,7 @@ class Module
         );
         \Zend\Validator\AbstractValidator::setDefaultTranslator($translator);
 
+        $this->auth($e);
 
     }
 
@@ -157,8 +159,58 @@ class Module
                 'Application\Db\Adapter\Profiler\Profiler' => function ($sm) {
                     $logger = $sm->get('Logger');
                     return new Db\Adapter\Profiler\Profiler($logger);
+                },
+                'Application\Auth' => function($sm) {
+                    $auth = new AuthenticationService();
+                    return $auth;
+                },
+                'Application\Model\Permissions' => function($sm) {
+                    $auth = $sm->get('Application\Auth');
+                    return new Model\Permissions($sm, $auth->getIdentity());
+                },
+            ),
+        );
+    }
+
+    public function getViewHelperConfig()
+    {
+        return array(
+            'factories' => array(
+                'permissions' => function($pm) {
+                    $plugin = $pm->getServiceLocator()->get('Application\Model\Permissions');
+                    return new View\Helper\Permissions($plugin);
+                },
+                'navigation' => function($pm) {
+                    $plugin = $pm->getServiceLocator()->get('Application\Model\Permissions');
+                    $nav = new View\Helper\Navigation($plugin);
+                    return $nav;
                 }
             ),
         );
+    }
+
+    protected function auth(MvcEvent $event)
+    {
+        $event->getApplication()->getEventManager()->attach('route', function($e) {
+            $app = $e->getApplication();
+            $routeMatch = $e->getRouteMatch();
+            $sm = $app->getServiceManager();
+            $auth = $sm->get('Application\Auth');
+
+            if (!$auth->hasIdentity() && !in_array($routeMatch->getMatchedRouteName(), array('login', 'change_password', 'api_password'))) {
+                $response = $e->getResponse();
+                if (strpos($routeMatch->getParam('controller'), 'Api\\') !== false) {
+                    $response->setStatusCode(401);
+                } else {
+                    $url = $e->getRouter()->assemble(array(), array('name' => 'login'));
+                    $response->getHeaders()->addHeaderLine('Location', $url);
+                    $response->setStatusCode(302);
+                }
+                $response->sendHeaders();
+
+                return $response;
+
+            }
+        }, -100);
     }
 }

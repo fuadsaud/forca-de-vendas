@@ -1,0 +1,40 @@
+<?php echo $this->doctype(); ?>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle('Força de Vendas') ?>
+
+        <?php echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ; ?>
+
+        <?php echo $this->headlink()
+            ->appendStylesheet('vendor/bootstrap/css/bootstrap.css')
+            ->appendStylesheet('css/styles.css');
+        ?>
+    </head>
+    <body>
+        <div class="header">
+            <div class="container">
+                <h1>Força de Vendas</h1>
+            </div>
+            <nav class="navbar navbar-default" role="navigation">
+            </nav>
+        </div>
+        <div class="container">
+            <?php echo $this->partial('partial/flashmessage.phtml') ?>
+            <?php echo $this->content; ?>
+        </div><!-- /.container -->
+
+        <footer class="footer">
+          <div class="container">
+            <p class="text-muted">&copy; 2014 - <?php echo date('Y') ?> <?php echo sprintf($this->translate('by %s. All rights reserved.'), 'DeliverIT' )?></p>
+          </div>
+        </footer>
+        <?php echo $this->inlineScript()
+            ->appendFile($this->basePath() . '/vendor/jquery/jquery.min.js')
+            ->appendFile($this->basePath() . '/vendor/bootstrap/js/bootstrap.min.js')
+        ; ?>
+    </body>
+</html>

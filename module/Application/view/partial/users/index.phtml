@@ -1,6 +1,5 @@
 <?php
-//    $canEdit = $this->permissions()->isAllowed('users', 'edit');
-    $canEdit = true;
+    $canEdit = $this->permissions()->isAllowed('users', 'edit');
 ?>
 
 <div ng-switch="renderAction">
@@ -48,7 +47,7 @@
                 <div<?php if ($canEdit): ?> ng-content-editable="user:select" data-options="groups_options"<?php endif ?> ng-model="user.group_id" data-errors="user.errors.group_id">{{user.group_name}}</div>
             </div>
             <div class="col-xs-2 action-cell text-right">
-                <?php if (true || $this->permissions()->isAllowed('users', 'delete')) : ?>
+                <?php if ($this->permissions()->isAllowed('users', 'delete')) : ?>
                     <button ng-click="delete_user(user.id, {remove: false})" class="fake-btn text-danger" title="<?php echo $this->translate('Delete') ?>" >
                         <i class="glyphicon glyphicon-trash"></i>
                         <span class="sr-only"><?php echo $this->translate('Delete') ?></span>
@@ -80,7 +79,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
