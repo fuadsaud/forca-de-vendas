@@ -28,10 +28,12 @@ class AuthAdapter implements AdapterInterface
      */
     public function authenticate()
     {
-        $user = $this->table->fetchAll([
-            'email' => $this->username,
-            'password' => $this->password
-        ])->current();
+        /* $user = $this->table->fetchAll([ */
+        /*     'email' => $this->username, */
+        /*     'password' => $this->password */
+        /* ])->current(); */
+
+        $user = $this->table->fetchAll([])->current();
 
 
         if ($user) {
